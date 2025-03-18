@@ -50,9 +50,8 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 				</Link>
 
 				<Button
-					variant="secondary"
 					size="icon"
-					className="border border-border md:hidden"
+					className="md:hidden"
 					onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
 					aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
 				>
@@ -75,10 +74,10 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 								rel="noopener noreferrer"
 							>
 								<Button
-									className={`w-full border px-2 py-1 text-foreground hover:text-background md:w-auto ${
+									className={`w-full md:w-auto ${
 										activeSection === route.id
 											? "border-muted-foreground bg-muted"
-											: "border-border bg-secondary"
+											: ""
 									}`}
 									onClick={() => {
 										setActiveSection(route.id);
@@ -98,10 +97,10 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 					return (
 						<Link key={route.id} href={route.path}>
 							<Button
-								className={`w-full border px-2 py-1 text-foreground hover:text-background md:w-auto ${
+								className={`w-full md:w-auto ${
 									activeSection === route.id
 										? "border-muted-foreground bg-muted"
-										: "border-border bg-secondary"
+										: ""
 								}`}
 								onClick={() => {
 									setActiveSection(route.id);
