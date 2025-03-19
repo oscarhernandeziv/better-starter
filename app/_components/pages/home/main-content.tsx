@@ -2,12 +2,8 @@ import { StackDiagram } from "./stack-diagram";
 
 export function MainContent() {
 	return (
-		<div className="h-full border-border border-r p-6">
+		<div className="flex h-full flex-col border-border border-r p-6">
 			<div className="mb-8">
-				<h1 className="mb-4 font-bold text-2xl">
-					NEXT.JS STARTER FOR THE FUTURE
-				</h1>
-
 				<div className="space-y-4 text-sm leading-relaxed">
 					<p>
 						Jumpstart your project with Next.js 15, React 19, and Tailwind v4,
@@ -22,8 +18,8 @@ export function MainContent() {
 					</p>
 
 					<p>
-						Start building at the speed of thought with complete .cursor/rules/
-						and .instructions/ directories for AI-powered development.
+						Start building at the speed of thought with complete configuration
+						for AI-powered development and enhanced productivity.
 					</p>
 				</div>
 			</div>

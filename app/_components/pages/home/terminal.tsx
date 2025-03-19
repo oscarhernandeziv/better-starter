@@ -17,8 +17,8 @@ const GETTING_STARTED_STEPS = [
 
 export function Terminal() {
 	return (
-		<div className="flex h-full flex-col border-border border-t md:border-t-0">
-			<div className="flex items-center justify-between border-border border-b bg-secondary px-3 py-1 text-sm">
+		<div className="flex h-full flex-col border-border border-t md:border-t-0 md:border-l">
+			<div className="flex items-center justify-between border-border border-b bg-secondary px-3 text-sm">
 				<span>Terminal</span>
 				<Button variant="ghost" size="icon">
 					<Minus size={14} />

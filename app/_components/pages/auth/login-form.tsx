@@ -5,8 +5,9 @@ export function LoginForm() {
 	return (
 		<div className="flex h-full items-center justify-center border-border border-r p-6">
 			<div className="w-full max-w-md">
-				<h2 className="mb-8 font-bold text-2xl">Sign In</h2>
-
+				<p className="mb-6 text-sm leading-relaxed">
+					Sign in to access all features and explore the full capabilities of Better Starter.
+				</p>
 				<div className="space-y-4">
 					<div className="space-y-2">
 						<Label htmlFor="email">Email</Label>

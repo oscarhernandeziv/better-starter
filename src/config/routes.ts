@@ -19,7 +19,7 @@ export const routes: Route[] = [
 		path: "https://github.com/oscarhernandeziv/better-starter",
 		isExternal: true,
 	},
-	{ id: "06", label: "06. SIGN IN", path: "/auth" },
+	{ id: "06", label: "06. Sign In", path: "/auth" },
 ];
 
 export const getSectionFromPath = (path: string): SectionId => {

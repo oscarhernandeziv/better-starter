@@ -34,17 +34,20 @@ export function Layout({ children, defaultSection = "00" }: LayoutProps) {
 					setActiveSection={setActiveSection}
 				/>
 
-				<div className="flex items-center border-border border-b p-4">
-					<div className="inline-block border border-border bg-secondary px-2 py-1 text-sm">
-						<span className="text-muted-foreground">{activeSection}.</span>{" "}
-						{sectionContent[activeSection].title}
-					</div>
-					<div className="ml-4 text-sm">
-						{sectionContent[activeSection].description}
+				<div className="flex items-center justify-between border-border border-b p-4">
+					<div className="flex items-center gap-4">
+						<div className="inline-flex size-9 items-center justify-center rounded-md bg-foreground text-background text-lg">
+							{activeSection}
+						</div>
+						<div>
+							<p className="font-bold text-foreground text-lg">
+								{sectionContent[activeSection].description}
+							</p>
+						</div>
 					</div>
 				</div>
 
-				<div className="flex-1">{children}</div>
+				<div className="grid flex-1 grid-rows-1">{children}</div>
 
 				<Footer />
 			</div>

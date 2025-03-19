@@ -7,17 +7,21 @@ export default function StackPage() {
 		<Layout defaultSection="01">
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<StackContent />
-				<div className="h-full p-6">
+				<div className="flex flex-col h-full p-6 border-border border-t md:border-t-0 md:border-l">
 					<h3 className="mb-4 font-bold text-lg">Performance</h3>
-					<p className="mb-4 text-muted-foreground text-sm">
+					<p className="mb-4 text-sm leading-relaxed">
 						Better Starter is optimized for speed and developer experience, with
-						features like:
+						advanced features for maximum performance:
 					</p>
 					<ul className="list-disc space-y-2 pl-5 text-sm">
-						<li>Server components for improved loading</li>
-						<li>Component-level code splitting</li>
-						<li>Optimized asset loading</li>
+						<li>React Server Components for improved loading</li>
+						<li>Automatic component-level code splitting</li>
+						<li>Optimized asset loading and image optimization</li>
 						<li>Edge-compatible deployment options</li>
+						<li>Partial prerendering for faster initial loads</li>
+						<li>Streaming server rendering for improved UX</li>
+						<li>Built-in caching strategies</li>
+						<li>Middleware for route-level optimizations</li>
 					</ul>
 				</div>
 			</div>
