@@ -1,6 +1,5 @@
 import type { SectionContent } from "@/src/types/sections";
 
-// Define section titles and descriptions
 export const sectionContent: SectionContent = {
 	"00": { title: "INDEX", description: "Introduction to Better Starter" },
 	"01": { title: "STACK", description: "Technology Stack Overview" },
