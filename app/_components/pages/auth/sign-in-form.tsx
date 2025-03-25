@@ -3,6 +3,7 @@
 import { Alert } from "@/app/_components/ui/alert";
 import { Button } from "@/app/_components/ui/button";
 import { Label } from "@/app/_components/ui/label";
+import { signIn } from "@/src/lib/auth-client";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -33,34 +34,24 @@ export function SignInForm() {
 							type="email"
 							required
 							className="w-full border border-border bg-secondary p-2 text-sm focus:outline-none focus:ring-2 focus:ring-muted-foreground"
-							placeholder="Enter your email"
+							placeholder="demo@example.com"
 							disabled={isLoading}
 						/>
 					</div>
 
-					<div className="space-y-2">
-						<div className="flex items-center justify-between">
-							<Label htmlFor="password">Password</Label>
-							<Link
-								href="/forgot-password"
-								className="text-primary text-xs hover:underline"
-							>
-								Forgot password?
-							</Link>
-						</div>
-						<input
-							id="password"
-							name="password"
-							type="password"
-							required
-							className="w-full border border-border bg-secondary p-2 text-sm focus:outline-none focus:ring-2 focus:ring-muted-foreground"
-							placeholder="Enter your password"
-							disabled={isLoading}
-						/>
-					</div>
-
-					<Button type="submit" className="w-full" disabled={isLoading}>
-						{isLoading ? "Signing in..." : "Sign In with Email"}
+					<Button
+						type="submit"
+						variant="submit"
+						className="w-full"
+						disabled={isLoading}
+						onClick={async () => {
+							await signIn.emailOtp({
+								email: "demo@example.com",
+								otp: "123456",
+							});
+						}}
+					>
+						{isLoading ? "Signing in..." : "Sign In with Magic Link"}
 					</Button>
 
 					<div className="relative my-4">
@@ -76,9 +67,15 @@ export function SignInForm() {
 
 					<Button
 						type="button"
-						variant="outline"
+						variant="submit"
 						className="w-full"
 						disabled={isLoading}
+						onClick={async () => {
+							await signIn.social({
+								provider: "github",
+								callbackURL: "/",
+							});
+						}}
 					>
 						<svg
 							viewBox="0 0 24 24"

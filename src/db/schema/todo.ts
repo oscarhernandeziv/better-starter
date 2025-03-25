@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const todos = sqliteTable("todos", {
+export const todo = sqliteTable("todo", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
 	content: text("content").notNull(),
 	completed: integer("completed", { mode: "boolean" }).notNull().default(false),
