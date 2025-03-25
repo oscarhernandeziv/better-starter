@@ -1,6 +1,6 @@
 export function StackContent() {
 	return (
-		<div className="flex h-full flex-col border-border border-r p-6">
+		<div className="flex h-full flex-col border-border p-6">
 			<div className="mb-8">
 				<p className="text-sm leading-relaxed">
 					Better Starter is built with a modern technology stack designed for

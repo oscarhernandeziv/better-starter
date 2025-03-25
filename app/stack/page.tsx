@@ -7,7 +7,7 @@ export default function StackPage() {
 		<Layout defaultSection="01">
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<StackContent />
-				<div className="flex flex-col h-full p-6 border-border border-t md:border-t-0 md:border-l">
+				<div className="flex h-full flex-col border-border border-t p-6 md:border-t-0 md:border-l">
 					<h3 className="mb-4 font-bold text-lg">Performance</h3>
 					<p className="mb-4 text-sm leading-relaxed">
 						Better Starter is optimized for speed and developer experience, with

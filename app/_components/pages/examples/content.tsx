@@ -1,6 +1,6 @@
 export function ExamplesContent() {
 	return (
-		<div className="flex flex-col h-full border-border border-r p-6">
+		<div className="flex h-full flex-col border-border p-6">
 			<div className="mb-8">
 				<div className="space-y-4 text-sm leading-relaxed">
 					<p>
@@ -14,8 +14,9 @@ export function ExamplesContent() {
 						confidence.
 					</p>
 					<p>
-						Each example comes with detailed documentation and source code, making
-						it easy to understand and adapt to your specific requirements.
+						Each example comes with detailed documentation and source code,
+						making it easy to understand and adapt to your specific
+						requirements.
 					</p>
 				</div>
 			</div>

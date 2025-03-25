@@ -2,7 +2,7 @@ import { StackDiagram } from "./stack-diagram";
 
 export function MainContent() {
 	return (
-		<div className="flex h-full flex-col border-border border-r p-6">
+		<div className="flex h-full flex-col border-border p-6">
 			<div className="mb-8">
 				<div className="space-y-4 text-sm leading-relaxed">
 					<p>

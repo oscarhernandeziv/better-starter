@@ -2,9 +2,9 @@
 
 import { Footer } from "@/app/_components/shared/navigation/footer";
 import { Header } from "@/app/_components/shared/navigation/header";
-import { getSectionFromPath } from "@/src/config/routes";
-import { sectionContent } from "@/src/config/sections";
-import type { SectionId } from "@/src/types/sections";
+import { getSectionFromPath, getSubSectionFromPath } from "@/src/config/routes";
+import { sectionContent, subSectionContent } from "@/src/config/sections";
+import type { SectionId, SubSectionId } from "@/src/types/sections";
 import { usePathname } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -12,10 +12,18 @@ import { useEffect, useState } from "react";
 interface LayoutProps {
 	children: React.ReactNode;
 	defaultSection?: SectionId;
+	defaultSubSection?: SubSectionId;
 }
 
-export function Layout({ children, defaultSection = "00" }: LayoutProps) {
+export function Layout({
+	children,
+	defaultSection = "00",
+	defaultSubSection,
+}: LayoutProps) {
 	const [activeSection, setActiveSection] = useState<SectionId>(defaultSection);
+	const [activeSubSection, setActiveSubSection] = useState<
+		SubSectionId | undefined
+	>(defaultSubSection);
 	const pathname = usePathname();
 
 	// Update active section based on current path
@@ -24,6 +32,9 @@ export function Layout({ children, defaultSection = "00" }: LayoutProps) {
 		if (section) {
 			setActiveSection(section);
 		}
+
+		const subSection = getSubSectionFromPath(pathname);
+		setActiveSubSection(subSection);
 	}, [pathname]);
 
 	return (
@@ -37,11 +48,21 @@ export function Layout({ children, defaultSection = "00" }: LayoutProps) {
 				<div className="flex items-center justify-between border-border border-b p-4">
 					<div className="flex items-center gap-4">
 						<div className="inline-flex size-9 items-center justify-center rounded-md bg-foreground text-background text-lg">
-							{activeSection}
+							{activeSubSection || activeSection}
 						</div>
 						<div>
 							<p className="font-bold text-foreground text-lg">
-								{sectionContent[activeSection].description}
+								{activeSubSection &&
+								subSectionContent[activeSection]?.[activeSubSection]
+									? subSectionContent[activeSection][activeSubSection].title
+									: sectionContent[activeSection].title}
+							</p>
+							<p className="text-muted-foreground text-sm">
+								{activeSubSection &&
+								subSectionContent[activeSection]?.[activeSubSection]
+									? subSectionContent[activeSection][activeSubSection]
+											.description
+									: sectionContent[activeSection].description}
 							</p>
 						</div>
 					</div>

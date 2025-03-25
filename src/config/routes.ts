@@ -1,7 +1,15 @@
-import type { SectionId } from "@/src/types/sections";
+import type { SectionId, SubSectionId } from "@/src/types/sections";
 
 export type Route = {
 	id: SectionId;
+	label: string;
+	path: string;
+	isExternal?: boolean;
+	subRoutes?: SubRoute[];
+};
+
+export type SubRoute = {
+	id: SubSectionId;
 	label: string;
 	path: string;
 	isExternal?: boolean;
@@ -11,18 +19,63 @@ export const routes: Route[] = [
 	{ id: "00", label: "00. Index", path: "/" },
 	{ id: "01", label: "01. Stack", path: "/stack" },
 	{ id: "02", label: "02. Docs", path: "/docs" },
-	{ id: "03", label: "03. Examples", path: "/examples" },
-	{ id: "04", label: "04. Todo", path: "/todo" },
 	{
-		id: "05",
-		label: "05. Source",
-		path: "https://github.com/oscarhernandeziv/better-starter",
-		isExternal: true,
+		id: "03",
+		label: "03. Examples",
+		path: "/examples",
+		subRoutes: [
+			{ id: "3.1", label: "3.1 Todo List", path: "/examples/todo" },
+			{ id: "3.2", label: "3.2 Authentication", path: "/examples/auth" },
+			{
+				id: "3.3",
+				label: "3.3 Data Visualization",
+				path: "/examples/data-viz",
+			},
+			{ id: "3.4", label: "3.4 Form Validation", path: "/examples/forms" },
+			{
+				id: "3.5",
+				label: "3.5 Infinite Scroll",
+				path: "/examples/infinite-scroll",
+			},
+		],
 	},
-	{ id: "06", label: "06. Sign In", path: "/auth" },
+	{
+		id: "04",
+		label: "04. Auth",
+		path: "/auth",
+		subRoutes: [
+			{ id: "4.1", label: "4.1 Sign In", path: "/auth/sign-in" },
+			{ id: "4.2", label: "4.2 Sign Up", path: "/auth/sign-up" },
+		],
+	},
 ];
 
 export const getSectionFromPath = (path: string): SectionId => {
+	// Check main routes first
 	const route = routes.find((r) => r.path === path);
-	return route?.id || "00";
+	if (route) return route.id;
+
+	// Check subroutes
+	for (const mainRoute of routes) {
+		if (mainRoute.subRoutes) {
+			const subRoute = mainRoute.subRoutes.find((sr) => sr.path === path);
+			if (subRoute) return mainRoute.id;
+		}
+	}
+
+	return "00";
+};
+
+export const getSubSectionFromPath = (
+	path: string,
+): SubSectionId | undefined => {
+	// Check all subroutes
+	for (const mainRoute of routes) {
+		if (mainRoute.subRoutes) {
+			const subRoute = mainRoute.subRoutes.find((sr) => sr.path === path);
+			if (subRoute) return subRoute.id;
+		}
+	}
+
+	return undefined;
 };

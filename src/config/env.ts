@@ -8,11 +8,11 @@ export const env = createEnv({
 	},
 	client: {},
 	runtimeEnv: {
-		// biome-ignore lint/nursery/noProcessEnv: <explanation>
+		// biome-ignore lint/nursery/noProcessEnv: only place process.env is allowed
 		TURSO_DB_URL: process.env.TURSO_DB_URL,
-		// biome-ignore lint/nursery/noProcessEnv: <explanation>
+		// biome-ignore lint/nursery/noProcessEnv: only place process.env is allowed
 		TURSO_DB_AUTH_TOKEN: process.env.TURSO_DB_AUTH_TOKEN,
 	},
-	// biome-ignore lint/nursery/noProcessEnv: <explanation>
+	// biome-ignore lint/nursery/noProcessEnv: only place process.env is allowed
 	skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
