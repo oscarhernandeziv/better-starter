@@ -11,6 +11,7 @@ import {
 } from "@/app/_components/ui/navigation-menu";
 import { cn } from "@/app/_components/utils";
 import { routes } from "@/src/config/routes";
+import type { SubRoute } from "@/src/config/routes";
 import { useSession } from "@/src/lib/auth-client";
 import type { SectionId } from "@/src/types/sections";
 import { ChevronDown, Menu, X } from "lucide-react";
@@ -41,20 +42,22 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 		setExpandedSection(expandedSection === section ? null : section);
 	};
 
-	// Function to get the label based on authentication state
-	const getRouteLabel = (route: (typeof routes)[0]) => {
-		if (route.id === "04") {
-			return isAuthenticated ? "04. Profile" : "04. Sign In";
-		}
-		return route.label;
+	// Function to determine if a route should be visible
+	const shouldShowRoute = (route: (typeof routes)[0]) => {
+		return true;
 	};
 
-	// Function to get the route path based on authentication state
-	const getRoutePath = (route: (typeof routes)[0]) => {
-		if (route.id === "04" && isAuthenticated) {
-			return "/profile";
+	// Function to determine if a subroute should be visible
+	const shouldShowSubRoute = (subRoute: SubRoute) => {
+		// Show Sign In only when not authenticated
+		if (subRoute.id === "4.1") {
+			return !isAuthenticated;
 		}
-		return route.path;
+		// Show Profile only when authenticated
+		if (subRoute.id === "4.2") {
+			return isAuthenticated;
+		}
+		return true;
 	};
 
 	return (
@@ -82,9 +85,18 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 				<div className="hidden md:flex md:items-center md:gap-2">
 					<NavigationMenu className="relative">
 						<NavigationMenuList className="flex gap-2">
-							{routes.map((route) => {
+							{routes.filter(shouldShowRoute).map((route) => {
 								// Check if route has subroutes
 								if (route.subRoutes && route.subRoutes.length > 0) {
+									// Filter visible subroutes
+									const visibleSubRoutes =
+										route.subRoutes.filter(shouldShowSubRoute);
+
+									// Skip routes with no visible subroutes
+									if (visibleSubRoutes.length === 0 && route.id === "4.0") {
+										return null;
+									}
+
 									return (
 										<NavigationMenuItem key={route.id}>
 											<NavigationMenuTrigger
@@ -96,11 +108,11 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 												)}
 												onClick={() => handleSectionChange(route.id)}
 											>
-												{getRouteLabel(route)}
+												{route.label}
 											</NavigationMenuTrigger>
 											<NavigationMenuContent>
 												<ul className="flex min-w-[150px] flex-col gap-1 p-1.5">
-													{route.subRoutes.map((subRoute) => (
+													{visibleSubRoutes.map((subRoute) => (
 														<li key={subRoute.id} className="whitespace-nowrap">
 															<Link
 																href={subRoute.path}
@@ -122,7 +134,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 								return (
 									<NavigationMenuItem key={route.id}>
 										<Link
-											href={getRoutePath(route)}
+											href={route.path}
 											className={cn(
 												buttonVariants(),
 												"h-9",
@@ -131,7 +143,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 											)}
 											onClick={() => handleSectionChange(route.id)}
 										>
-											{getRouteLabel(route)}
+											{route.label}
 										</Link>
 									</NavigationMenuItem>
 								);
@@ -145,13 +157,13 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 			{/* Mobile Navigation */}
 			{mobileMenuOpen && (
 				<nav className="absolute top-full right-0 left-0 z-50 flex flex-col gap-1.5 border-border border-t bg-background p-3 text-xs">
-					{routes.map((route) => (
+					{routes.filter(shouldShowRoute).map((route) => (
 						<div key={route.id} className="w-full">
 							{route.subRoutes && route.subRoutes.length > 0 ? (
 								<div>
 									<div className="flex w-full items-center">
 										<Link
-											href={getRoutePath(route)}
+											href={route.path}
 											className="block flex-1"
 											onClick={() => handleSectionChange(route.id)}
 										>
@@ -162,7 +174,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 														"bg-foreground text-background",
 												)}
 											>
-												{getRouteLabel(route)}
+												{route.label}
 											</Button>
 										</Link>
 										<Button
@@ -182,26 +194,28 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 
 									{expandedSection === route.id && (
 										<div className="mt-1.5 ml-3 space-y-1.5 border-muted border-l-2 pl-2">
-											{route.subRoutes.map((subRoute) => (
-												<Link
-													key={subRoute.id}
-													href={subRoute.path}
-													className="block w-full"
-												>
-													<Button
-														variant="ghost"
-														className="w-full justify-start hover:bg-foreground hover:text-background"
+											{route.subRoutes
+												.filter(shouldShowSubRoute)
+												.map((subRoute) => (
+													<Link
+														key={subRoute.id}
+														href={subRoute.path}
+														className="block w-full"
 													>
-														{subRoute.label}
-													</Button>
-												</Link>
-											))}
+														<Button
+															variant="ghost"
+															className="w-full justify-start hover:bg-foreground hover:text-background"
+														>
+															{subRoute.label}
+														</Button>
+													</Link>
+												))}
 										</div>
 									)}
 								</div>
 							) : (
 								<Link
-									href={getRoutePath(route)}
+									href={route.path}
 									className="block w-full"
 									onClick={() => handleSectionChange(route.id)}
 								>
@@ -212,7 +226,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 												"bg-foreground text-background",
 										)}
 									>
-										{getRouteLabel(route)}
+										{route.label}
 									</Button>
 								</Link>
 							)}

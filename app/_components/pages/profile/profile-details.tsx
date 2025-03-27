@@ -22,7 +22,7 @@ export function ProfileDetails() {
 							onClick={async () => {
 								await authClient.signOut({
 									fetchOptions: {
-										onSuccess: () => router.push("/"),
+										onSuccess: () => router.push("/sign-in"),
 									},
 								});
 							}}

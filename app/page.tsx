@@ -6,7 +6,7 @@ import { Layout } from "@/app/_components/shared/layout";
 
 export default function HomePage() {
 	return (
-		<Layout defaultSection="00">
+		<Layout defaultSection="0.0">
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<MainContent />
 				<Terminal />

@@ -4,7 +4,7 @@ import { Layout } from "@/app/_components/shared/layout";
 
 export default function StackPage() {
 	return (
-		<Layout defaultSection="01">
+		<Layout defaultSection="1.0">
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<StackContent />
 				<div className="flex h-full flex-col border-border border-t p-6 md:border-t-0 md:border-l">

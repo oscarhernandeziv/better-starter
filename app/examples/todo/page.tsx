@@ -2,11 +2,19 @@
 
 import { Layout } from "@/app/_components/shared/layout";
 import { Card, CardContent, CardTitle } from "@/app/_components/ui/card";
+import { useSession } from "@/src/lib/auth-client";
 import { Construction } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default function TodoPage() {
+	const { data: session } = useSession();
+
+	if (!session) {
+		redirect("/sign-in");
+	}
+
 	return (
-		<Layout defaultSection="03" defaultSubSection="3.1">
+		<Layout defaultSection="3.0" defaultSubSection="3.1">
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<div className="flex h-full flex-col p-6">
 					<p className="mb-4 text-sm leading-relaxed">

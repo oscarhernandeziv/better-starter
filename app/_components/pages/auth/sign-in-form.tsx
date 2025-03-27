@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { AnonymousButton } from "@/app/_components/pages/auth/anonymous-button";
@@ -80,7 +80,7 @@ export function SignInForm() {
 
 			if (response?.data) {
 				setSuccess("Logged in successfully.");
-				router.replace("/dashboard");
+				router.replace("/profile");
 			} else if (response?.error) {
 				setError(response.error.message);
 			}
@@ -104,10 +104,15 @@ export function SignInForm() {
 	const otpVerificationForm = useForm<EmailOTPSignIn>({
 		resolver: zodResolver(EmailOTPSignInSchema),
 		defaultValues: {
-			email: "",
+			email: email,
 			otp: "",
 		},
 	});
+
+	// Effect to update the email field in OTP verification form when email state changes
+	useEffect(() => {
+		otpVerificationForm.setValue("email", email);
+	}, [email, otpVerificationForm]);
 
 	return (
 		<CardWrapper
@@ -151,7 +156,6 @@ export function SignInForm() {
 						<Input
 							id="email"
 							{...otpVerificationForm.register("email")}
-							value={email}
 							disabled={true}
 						/>
 					</div>

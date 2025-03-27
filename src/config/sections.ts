@@ -2,16 +2,16 @@ import type { SectionContent, SubSectionContent } from "@/src/types/sections";
 
 // Main sections
 export const sectionContent: SectionContent = {
-	"00": { title: "HOME", description: "Introduction to Better Starter" },
-	"01": { title: "STACK", description: "Technology Stack Overview" },
-	"02": { title: "DOCS", description: "Documentation & Resources" },
-	"03": { title: "EXAMPLES", description: "Sample Pages and Components" },
-	"04": { title: "SIGN IN", description: "User Authentication" },
+	"0.0": { title: "HOME", description: "Introduction to Better Starter" },
+	"1.0": { title: "STACK", description: "Technology Stack Overview" },
+	"2.0": { title: "DOCS", description: "Documentation & Resources" },
+	"3.0": { title: "EXAMPLES", description: "Sample Pages and Components" },
+	"4.0": { title: "SIGN IN", description: "User Authentication" },
 };
 
-// Subsections for section 03 (Examples)
+// Subsections
 export const subSectionContent: SubSectionContent = {
-	"03": {
+	"3.0": {
 		"3.1": {
 			title: "TODO LIST APPLICATION",
 			description: "CRUD operations with Next.js server actions",
@@ -31,6 +31,16 @@ export const subSectionContent: SubSectionContent = {
 		"3.5": {
 			title: "INFINITE SCROLL",
 			description: "Optimized data loading patterns",
+		},
+	},
+	"4.0": {
+		"4.1": {
+			title: "SIGN IN",
+			description: "Authenticate with your account",
+		},
+		"4.2": {
+			title: "PROFILE",
+			description: "Manage your user profile",
 		},
 	},
 };

@@ -1,5 +1,5 @@
 // Define section types
-export type SectionId = "00" | "01" | "02" | "03" | "04";
+export type SectionId = "0.0" | "1.0" | "2.0" | "3.0" | "4.0";
 
 // Define subsection types
 export type SubSectionId =

@@ -17,7 +17,7 @@ interface LayoutProps {
 
 export function Layout({
 	children,
-	defaultSection = "00",
+	defaultSection = "0.0",
 	defaultSubSection,
 }: LayoutProps) {
 	const [activeSection, setActiveSection] = useState<SectionId>(defaultSection);
@@ -47,7 +47,7 @@ export function Layout({
 
 				<div className="flex items-center justify-between border-border border-b p-4">
 					<div className="flex items-center gap-4">
-						<div className="inline-flex size-9 items-center justify-center rounded-md bg-foreground text-background text-lg">
+						<div className="inline-flex min-w-11 items-center justify-center rounded-md bg-foreground px-2 py-1.5 text-background text-lg">
 							{activeSubSection || activeSection}
 						</div>
 						<div>
@@ -55,14 +55,14 @@ export function Layout({
 								{activeSubSection &&
 								subSectionContent[activeSection]?.[activeSubSection]
 									? subSectionContent[activeSection][activeSubSection].title
-									: sectionContent[activeSection].title}
+									: sectionContent[activeSection]?.title || "Unknown Section"}
 							</p>
 							<p className="text-muted-foreground text-sm">
 								{activeSubSection &&
 								subSectionContent[activeSection]?.[activeSubSection]
 									? subSectionContent[activeSection][activeSubSection]
 											.description
-									: sectionContent[activeSection].description}
+									: sectionContent[activeSection]?.description || ""}
 							</p>
 						</div>
 					</div>
