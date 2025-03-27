@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { anonymous, emailOTP, twoFactor } from "better-auth/plugins";
+import { anonymous, emailOTP } from "better-auth/plugins";
 import { env } from "../config/env";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
@@ -17,26 +17,16 @@ export const auth = betterAuth({
 
 	socialProviders: {
 		github: {
-			clientId: env.GITHUB_CLIENT_ID,
-			clientSecret: env.GITHUB_CLIENT_SECRET,
-			redirectUri: `${env.BETTER_AUTH_URL}/api/auth/callback/github`,
+			clientId: env.GITHUB_CLIENT_ID as string,
+			clientSecret: env.GITHUB_CLIENT_SECRET as string,
+		},
+		google: {
+			clientId: env.GOOGLE_CLIENT_ID as string,
+			clientSecret: env.GOOGLE_CLIENT_SECRET as string,
 		},
 	},
 
 	plugins: [
-		twoFactor({
-			otpOptions: {
-				async sendOTP({ user, otp }) {
-					await resend.emails.send({
-						from: "Better Starter <onboarding@resend.dev>",
-						to: user.email,
-						subject: "Your OTP for Better Starter",
-						text: `Your OTP is ${otp}`,
-					});
-				},
-			},
-			skipVerificationOnEnable: true,
-		}),
 		emailOTP({
 			async sendVerificationOTP({ email, otp, type }) {
 				if (type === "sign-in") {
@@ -44,21 +34,34 @@ export const auth = betterAuth({
 						from: "Acme <onboarding@resend.dev>",
 						to: email,
 						subject: "Sign In OTP",
-						html: `Your OTP Code is ${otp}`,
+						html: `
+							<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+								<h2>Sign In to Better Starter</h2>
+								<p>Your one-time password (OTP) is:</p>
+								<div style="font-size: 24px; font-weight: bold; padding: 12px; background-color: #f4f4f4; border-radius: 4px; margin: 12px 0; text-align: center;">
+									${otp}
+								</div>
+								<p>This code will expire in 10 minutes.</p>
+								<p>If you didn't request this code, you can safely ignore this email.</p>
+							</div>
+						`,
 					});
 				} else if (type === "email-verification") {
 					await resend.emails.send({
 						from: "Acme <onboarding@resend.dev>",
 						to: email,
 						subject: "Email Verification OTP",
-						html: `Your OTP Code is ${otp}`,
-					});
-				} else {
-					await resend.emails.send({
-						from: "Acme <onboarding@resend.dev>",
-						to: email,
-						subject: "Password Reset OTP",
-						html: `Your OTP Code is ${otp}`,
+						html: `
+							<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+								<h2>Verify Your Email Address</h2>
+								<p>Your one-time password (OTP) for email verification is:</p>
+								<div style="font-size: 24px; font-weight: bold; padding: 12px; background-color: #f4f4f4; border-radius: 4px; margin: 12px 0; text-align: center;">
+									${otp}
+								</div>
+								<p>This code will expire in 10 minutes.</p>
+								<p>If you didn't request this code, you can safely ignore this email.</p>
+							</div>
+						`,
 					});
 				}
 			},

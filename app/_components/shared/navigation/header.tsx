@@ -11,6 +11,7 @@ import {
 } from "@/app/_components/ui/navigation-menu";
 import { cn } from "@/app/_components/utils";
 import { routes } from "@/src/config/routes";
+import { useSession } from "@/src/lib/auth-client";
 import type { SectionId } from "@/src/types/sections";
 import { ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
@@ -26,6 +27,8 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 	const [expandedSection, setExpandedSection] = useState<SectionId | null>(
 		null,
 	);
+	const { data: session } = useSession();
+	const isAuthenticated = !!session;
 
 	// Handle section change
 	const handleSectionChange = (section: SectionId) => {
@@ -36,6 +39,22 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 	// Toggle expanded section for mobile
 	const toggleExpanded = (section: SectionId) => {
 		setExpandedSection(expandedSection === section ? null : section);
+	};
+
+	// Function to get the label based on authentication state
+	const getRouteLabel = (route: (typeof routes)[0]) => {
+		if (route.id === "04") {
+			return isAuthenticated ? "04. Profile" : "04. Sign In";
+		}
+		return route.label;
+	};
+
+	// Function to get the route path based on authentication state
+	const getRoutePath = (route: (typeof routes)[0]) => {
+		if (route.id === "04" && isAuthenticated) {
+			return "/profile";
+		}
+		return route.path;
 	};
 
 	return (
@@ -77,7 +96,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 												)}
 												onClick={() => handleSectionChange(route.id)}
 											>
-												{route.label}
+												{getRouteLabel(route)}
 											</NavigationMenuTrigger>
 											<NavigationMenuContent>
 												<ul className="flex min-w-[150px] flex-col gap-1 p-1.5">
@@ -103,7 +122,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 								return (
 									<NavigationMenuItem key={route.id}>
 										<Link
-											href={route.path}
+											href={getRoutePath(route)}
 											className={cn(
 												buttonVariants(),
 												"h-9",
@@ -112,7 +131,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 											)}
 											onClick={() => handleSectionChange(route.id)}
 										>
-											{route.label}
+											{getRouteLabel(route)}
 										</Link>
 									</NavigationMenuItem>
 								);
@@ -132,7 +151,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 								<div>
 									<div className="flex w-full items-center">
 										<Link
-											href={route.path}
+											href={getRoutePath(route)}
 											className="block flex-1"
 											onClick={() => handleSectionChange(route.id)}
 										>
@@ -143,7 +162,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 														"bg-foreground text-background",
 												)}
 											>
-												{route.label}
+												{getRouteLabel(route)}
 											</Button>
 										</Link>
 										<Button
@@ -182,7 +201,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 								</div>
 							) : (
 								<Link
-									href={route.path}
+									href={getRoutePath(route)}
 									className="block w-full"
 									onClick={() => handleSectionChange(route.id)}
 								>
@@ -193,7 +212,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 												"bg-foreground text-background",
 										)}
 									>
-										{route.label}
+										{getRouteLabel(route)}
 									</Button>
 								</Link>
 							)}

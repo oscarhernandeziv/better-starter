@@ -1,107 +1,240 @@
 "use client";
 
-import { Alert } from "@/app/_components/ui/alert";
-import { Button } from "@/app/_components/ui/button";
-import { Label } from "@/app/_components/ui/label";
-import { signIn } from "@/src/lib/auth-client";
-import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+import { AnonymousButton } from "@/app/_components/pages/auth/anonymous-button";
+import { CardWrapper } from "@/app/_components/pages/auth/card-wrapper";
+import {
+	FormError,
+	FormSuccess,
+} from "@/app/_components/pages/auth/form-feedback";
+import { GitHubIcon, GoogleIcon } from "@/app/_components/pages/auth/icons";
+import { SocialButton } from "@/app/_components/pages/auth/social-button";
+import { Button } from "@/app/_components/ui/button";
+import { Input } from "@/app/_components/ui/input";
+import { Label } from "@/app/_components/ui/label";
+import {
+	type EmailOTPRequest,
+	EmailOTPRequestSchema,
+	type EmailOTPSignIn,
+	EmailOTPSignInSchema,
+} from "@/src/domain/schemas/auth";
+import {
+	requestEmailOTP,
+	signInWithEmailOTP,
+} from "@/src/helpers/auth/email-otp";
+import { useAuthState } from "@/src/hooks/useAuthState";
 
 export function SignInForm() {
-	const [isLoading] = useState(false);
-	const [error] = useState<string | null>(null);
+	// State to track if OTP has been requested
+	const [otpRequested, setOtpRequested] = useState(false);
+	const [email, setEmail] = useState("");
+
+	// Router instance for navigation
+	const router = useRouter();
+
+	// Authentication state hooks for managing feedback and loading state
+	const {
+		error,
+		success,
+		loading,
+		setSuccess,
+		setError,
+		setLoading,
+		resetState,
+	} = useAuthState();
+
+	// Request OTP handler
+	const handleRequestOTP = async (data: EmailOTPRequest) => {
+		resetState();
+		setLoading(true);
+
+		try {
+			const response = await requestEmailOTP(data.email);
+
+			if (response?.data) {
+				setEmail(data.email);
+				setSuccess("OTP has been sent to your email.");
+				setOtpRequested(true);
+			} else if (response?.error) {
+				setError(response.error.message);
+			}
+		} catch (err) {
+			console.error(err);
+			setError("Something went wrong. Please try again.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// Verify OTP and sign in handler
+	const handleVerifyOTP = async (data: EmailOTPSignIn) => {
+		resetState();
+		setLoading(true);
+
+		try {
+			const response = await signInWithEmailOTP(data.email, data.otp);
+
+			if (response?.data) {
+				setSuccess("Logged in successfully.");
+				router.replace("/dashboard");
+			} else if (response?.error) {
+				setError(response.error.message);
+			}
+		} catch (err) {
+			console.error(err);
+			setError("Something went wrong. Please try again.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// OTP Request Form
+	const otpRequestForm = useForm<EmailOTPRequest>({
+		resolver: zodResolver(EmailOTPRequestSchema),
+		defaultValues: {
+			email: "",
+		},
+	});
+
+	// OTP Verification Form
+	const otpVerificationForm = useForm<EmailOTPSignIn>({
+		resolver: zodResolver(EmailOTPSignInSchema),
+		defaultValues: {
+			email: "",
+			otp: "",
+		},
+	});
 
 	return (
-		<div className="flex h-full justify-center border-border p-6">
-			<div className="w-full max-w-md">
-				<p className="mb-6 text-muted-foreground text-sm leading-relaxed">
-					Sign in to access all features and explore the full capabilities of
-					Better Starter.
-				</p>
-
-				{error && (
-					<Alert variant="destructive" className="mb-4">
-						{error}
-					</Alert>
-				)}
-
-				<form className="space-y-4">
+		<CardWrapper
+			cardTitle="Sign In"
+			cardDescription="Sign in with a one-time password (OTP) sent to your email or with a social provider."
+		>
+			{!otpRequested ? (
+				<form
+					onSubmit={otpRequestForm.handleSubmit(handleRequestOTP)}
+					className="space-y-4"
+				>
 					<div className="space-y-2">
 						<Label htmlFor="email">Email</Label>
-						<input
+						<Input
 							id="email"
-							name="email"
-							type="email"
-							required
-							className="w-full border border-border bg-secondary p-2 text-sm focus:outline-none focus:ring-2 focus:ring-muted-foreground"
-							placeholder="demo@example.com"
-							disabled={isLoading}
+							{...otpRequestForm.register("email")}
+							placeholder="email@example.com"
+							disabled={loading}
+						/>
+						{otpRequestForm.formState.errors.email && (
+							<p className="text-destructive text-sm">
+								{otpRequestForm.formState.errors.email.message}
+							</p>
+						)}
+					</div>
+
+					<FormError message={error} />
+					<FormSuccess message={success} />
+
+					<Button disabled={loading} type="submit" className="w-full">
+						Send OTP
+					</Button>
+				</form>
+			) : (
+				<form
+					onSubmit={otpVerificationForm.handleSubmit(handleVerifyOTP)}
+					className="space-y-4"
+				>
+					<div className="space-y-2">
+						<Label htmlFor="email">Email</Label>
+						<Input
+							id="email"
+							{...otpVerificationForm.register("email")}
+							value={email}
+							disabled={true}
 						/>
 					</div>
 
-					<Button
-						type="submit"
-						variant="submit"
-						className="w-full"
-						disabled={isLoading}
-						onClick={async () => {
-							await signIn.emailOtp({
-								email: "demo@example.com",
-								otp: "123456",
-							});
-						}}
-					>
-						{isLoading ? "Signing in..." : "Sign In with Magic Link"}
-					</Button>
-
-					<div className="relative my-4">
-						<div className="absolute inset-0 flex items-center">
-							<div className="w-full border-border border-t" />
-						</div>
-						<div className="relative flex justify-center text-xs uppercase">
-							<span className="bg-background px-2 text-muted-foreground">
-								Or continue with
-							</span>
+					<div className="space-y-2">
+						<Label htmlFor="otp">One-Time Password</Label>
+						<Input
+							id="otp"
+							{...otpVerificationForm.register("otp")}
+							placeholder="Enter OTP from your email"
+							disabled={loading}
+						/>
+						{otpVerificationForm.formState.errors.otp && (
+							<p className="text-destructive text-sm">
+								{otpVerificationForm.formState.errors.otp.message}
+							</p>
+						)}
+						<div className="flex justify-end">
+							<Button
+								type="button"
+								variant="link"
+								className="h-auto p-0 text-primary text-xs"
+								onClick={async () => {
+									await handleRequestOTP({ email });
+								}}
+							>
+								Resend OTP
+							</Button>
 						</div>
 					</div>
+
+					<FormError message={error} />
+					<FormSuccess message={success} />
+
+					<Button disabled={loading} type="submit" className="w-full">
+						Verify OTP & Sign In
+					</Button>
 
 					<Button
 						type="button"
-						variant="submit"
+						variant="outline"
 						className="w-full"
-						disabled={isLoading}
-						onClick={async () => {
-							await signIn.social({
-								provider: "github",
-								callbackURL: "/",
-							});
+						onClick={() => {
+							resetState();
+							setOtpRequested(false);
 						}}
 					>
-						<svg
-							viewBox="0 0 24 24"
-							className="mr-2 h-4 w-4"
-							aria-label="GitHub"
-							aria-hidden="true"
-						>
-							<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-						</svg>
-						GitHub
+						Back
 					</Button>
-
-					<div className="mt-6 text-center text-muted-foreground text-sm">
-						<p>
-							Don't have an account?{" "}
-							<Link href="/sign-up" className="text-primary hover:underline">
-								Sign up
-							</Link>
-						</p>
-					</div>
-
-					<div className="text-center text-muted-foreground text-xs">
-						<p>Demo account: demo@example.com / password</p>
-					</div>
 				</form>
+			)}
+
+			{/* Or Divider */}
+			<div className="relative mt-6">
+				<div className="absolute inset-0 flex items-center">
+					<div className="w-full border-gray-300 border-t" />
+				</div>
+				<div className="relative flex justify-center text-sm">
+					<span className="bg-background px-2 text-muted-foreground">
+						Or continue with
+					</span>
+				</div>
 			</div>
-		</div>
+
+			{/* Social Buttons */}
+			<div className="mt-4 space-y-2">
+				<SocialButton
+					provider="github"
+					icon={<GitHubIcon />}
+					label="Sign in with GitHub"
+				/>
+
+				<SocialButton
+					provider="google"
+					icon={<GoogleIcon />}
+					label="Sign in with Google"
+				/>
+			</div>
+
+			{/* Guest Login Option */}
+			<div className="mt-4">
+				<AnonymousButton />
+			</div>
+		</CardWrapper>
 	);
 }

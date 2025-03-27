@@ -55,12 +55,3 @@ export const verification = sqliteTable("verification", {
 	createdAt: integer("created_at", { mode: "timestamp" }),
 	updatedAt: integer("updated_at", { mode: "timestamp" }),
 });
-
-export const twoFactor = sqliteTable("two_factor", {
-	id: text("id").primaryKey(),
-	secret: text("secret").notNull(),
-	backupCodes: text("backup_codes").notNull(),
-	userId: text("user_id")
-		.notNull()
-		.references(() => user.id, { onDelete: "cascade" }),
-});

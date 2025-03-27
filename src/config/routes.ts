@@ -41,12 +41,8 @@ export const routes: Route[] = [
 	},
 	{
 		id: "04",
-		label: "04. Auth",
-		path: "/auth",
-		subRoutes: [
-			{ id: "4.1", label: "4.1 Sign In", path: "/auth/sign-in" },
-			{ id: "4.2", label: "4.2 Sign Up", path: "/auth/sign-up" },
-		],
+		label: "04. Sign In",
+		path: "/sign-in",
 	},
 ];
 

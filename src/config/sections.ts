@@ -6,7 +6,7 @@ export const sectionContent: SectionContent = {
 	"01": { title: "STACK", description: "Technology Stack Overview" },
 	"02": { title: "DOCS", description: "Documentation & Resources" },
 	"03": { title: "EXAMPLES", description: "Sample Pages and Components" },
-	"04": { title: "AUTH", description: "User Authentication Options" },
+	"04": { title: "SIGN IN", description: "User Authentication" },
 };
 
 // Subsections for section 03 (Examples)
@@ -31,16 +31,6 @@ export const subSectionContent: SubSectionContent = {
 		"3.5": {
 			title: "INFINITE SCROLL",
 			description: "Optimized data loading patterns",
-		},
-	},
-	"04": {
-		"4.1": {
-			title: "SIGN IN",
-			description: "Log in to your account",
-		},
-		"4.2": {
-			title: "SIGN UP",
-			description: "Create a new account",
 		},
 	},
 };
