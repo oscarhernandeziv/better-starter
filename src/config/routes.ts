@@ -1,68 +1,73 @@
-import type { SectionId, SubSectionId } from "@/src/types/sections";
+import type { SectionName, SubSectionName } from "@/src/types/sections";
 
 export type Route = {
-	id: SectionId;
+	id: SectionName;
 	label: string;
 	path: string;
 	isExternal?: boolean;
 	subRoutes?: SubRoute[];
+	requiresAuth?: boolean;
 };
 
 export type SubRoute = {
-	id: SubSectionId;
+	id: SubSectionName;
 	label: string;
 	path: string;
 	isExternal?: boolean;
+	requiresAuth?: boolean;
 };
 
 export const routes: Route[] = [
-	{ id: "0.0", label: "0.0 Index", path: "/" },
-	{ id: "1.0", label: "1.0 Stack", path: "/stack" },
-	{ id: "2.0", label: "2.0 Docs", path: "/docs" },
+	{ id: "home", label: "00. INDEX", path: "/" },
+	{ id: "stack", label: "01. STACK", path: "/stack" },
+	{ id: "docs", label: "02. DOCS", path: "/docs" },
 	{
-		id: "3.0",
-		label: "3.0 Examples",
+		id: "examples",
+		label: "03. EXAMPLES",
 		path: "/examples",
 		subRoutes: [
 			{
-				id: "3.1",
-				label: "3.1 Todo List",
+				id: "todo",
+				label: "TODO LIST",
 				path: "/examples/todo",
 			},
 			{
-				id: "3.2",
-				label: "3.2 Authentication",
+				id: "authentication",
+				label: "AUTH",
 				path: "/examples/auth",
 			},
 			{
-				id: "3.3",
-				label: "3.3 Data Visualization",
+				id: "dataViz",
+				label: "DATA VIZ",
 				path: "/examples/data-viz",
 			},
 			{
-				id: "3.4",
-				label: "3.4 Form Validation",
+				id: "forms",
+				label: "FORM VALIDATION",
 				path: "/examples/forms",
 			},
 			{
-				id: "3.5",
-				label: "3.5 Infinite Scroll",
+				id: "infiniteScroll",
+				label: "INFINITE SCROLL",
 				path: "/examples/infinite-scroll",
 			},
 		],
 	},
 	{
-		id: "4.0",
-		label: "4.0 Sign In",
+		id: "signIn",
+		label: "04. SIGN IN",
 		path: "/sign-in",
-		subRoutes: [
-			{ id: "4.1", label: "4.1 Sign In", path: "/sign-in" },
-			{ id: "4.2", label: "4.2 Profile", path: "/profile" },
-		],
+		requiresAuth: false,
+	},
+	{
+		id: "profile",
+		label: "04. PROFILE",
+		path: "/profile",
+		requiresAuth: true,
 	},
 ];
 
-export const getSectionFromPath = (path: string): SectionId => {
+export const getSectionFromPath = (path: string): SectionName => {
 	// Check main routes first
 	const route = routes.find((r) => r.path === path);
 	if (route) return route.id;
@@ -75,12 +80,12 @@ export const getSectionFromPath = (path: string): SectionId => {
 		}
 	}
 
-	return "0.0";
+	return "home";
 };
 
 export const getSubSectionFromPath = (
 	path: string,
-): SubSectionId | undefined => {
+): SubSectionName | undefined => {
 	// Check all subroutes
 	for (const mainRoute of routes) {
 		if (mainRoute.subRoutes) {

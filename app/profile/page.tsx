@@ -6,7 +6,7 @@ import { Layout } from "@/app/_components/shared/layout";
 
 export default function ProfilePage() {
 	return (
-		<Layout defaultSection="4.0" defaultSubSection="4.2">
+		<Layout defaultSection="auth">
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<ProfileContent />
 				<ProfileDetails />

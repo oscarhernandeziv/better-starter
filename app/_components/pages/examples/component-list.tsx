@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function ComponentList() {
 	// Get the examples route which contains subRoutes
-	const examplesRoute = routes.find((route) => route.id === "03");
+	const examplesRoute = routes.find((route) => route.id === "examples");
 	const subRoutes = examplesRoute?.subRoutes || [];
 
 	return (
@@ -18,7 +18,7 @@ export function ComponentList() {
 				<h4 className="mb-2 font-semibold">Available Examples</h4>
 				<ul className="list-disc space-y-2 pl-5 text-sm">
 					{subRoutes
-						.filter((route) => route.id === "3.1")
+						.filter((route) => route.id === "todo")
 						.map((route) => (
 							<li key={route.id}>
 								<Link
@@ -36,7 +36,7 @@ export function ComponentList() {
 				<h4 className="mb-2 font-semibold">Coming Soon</h4>
 				<ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
 					{subRoutes
-						.filter((route) => route.id !== "3.1")
+						.filter((route) => route.id !== "todo")
 						.map((route) => (
 							<li key={route.id}>
 								<span>{route.label}</span>
@@ -47,3 +47,4 @@ export function ComponentList() {
 		</div>
 	);
 }
+∑

@@ -13,50 +13,62 @@ import { cn } from "@/app/_components/utils";
 import { routes } from "@/src/config/routes";
 import type { SubRoute } from "@/src/config/routes";
 import { useSession } from "@/src/lib/auth-client";
-import type { SectionId } from "@/src/types/sections";
+import type { SectionName } from "@/src/types/sections";
 import { ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 interface HeaderProps {
-	activeSection: SectionId;
-	setActiveSection: (section: SectionId) => void;
+	activeSection: SectionName;
+	setActiveSection: (section: SectionName) => void;
 }
 
 export function Header({ activeSection, setActiveSection }: HeaderProps) {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-	const [expandedSection, setExpandedSection] = useState<SectionId | null>(
+	const [expandedSection, setExpandedSection] = useState<SectionName | null>(
 		null,
 	);
 	const { data: session } = useSession();
 	const isAuthenticated = !!session;
 
 	// Handle section change
-	const handleSectionChange = (section: SectionId) => {
+	const handleSectionChange = (section: SectionName) => {
 		setActiveSection(section);
 		setMobileMenuOpen(false);
 	};
 
 	// Toggle expanded section for mobile
-	const toggleExpanded = (section: SectionId) => {
+	const toggleExpanded = (section: SectionName) => {
 		setExpandedSection(expandedSection === section ? null : section);
 	};
 
 	// Function to determine if a route should be visible
 	const shouldShowRoute = (route: (typeof routes)[0]) => {
+		// Hide routes that require auth but user is not authenticated
+		if (route.requiresAuth === true && !isAuthenticated) {
+			return false;
+		}
+
+		// Hide routes that should only be shown when not authenticated
+		if (route.requiresAuth === false && isAuthenticated) {
+			return false;
+		}
+
 		return true;
 	};
 
 	// Function to determine if a subroute should be visible
 	const shouldShowSubRoute = (subRoute: SubRoute) => {
-		// Show Sign In only when not authenticated
-		if (subRoute.id === "4.1") {
-			return !isAuthenticated;
-		}
-		// Show Profile only when authenticated
-		if (subRoute.id === "4.2") {
+		// Check if route requires authentication
+		if (subRoute.requiresAuth === true) {
 			return isAuthenticated;
 		}
+
+		// Check if route should only be shown when not authenticated
+		if (subRoute.requiresAuth === false) {
+			return !isAuthenticated;
+		}
+
 		return true;
 	};
 
@@ -93,12 +105,12 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 										route.subRoutes.filter(shouldShowSubRoute);
 
 									// Skip routes with no visible subroutes
-									if (visibleSubRoutes.length === 0 && route.id === "4.0") {
+									if (visibleSubRoutes.length === 0) {
 										return null;
 									}
 
 									return (
-										<NavigationMenuItem key={route.id}>
+										<NavigationMenuItem key={route.path}>
 											<NavigationMenuTrigger
 												className={cn(
 													buttonVariants(),
@@ -113,7 +125,10 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 											<NavigationMenuContent>
 												<ul className="flex min-w-[150px] flex-col gap-1 p-1.5">
 													{visibleSubRoutes.map((subRoute) => (
-														<li key={subRoute.id} className="whitespace-nowrap">
+														<li
+															key={subRoute.path}
+															className="whitespace-nowrap"
+														>
 															<Link
 																href={subRoute.path}
 																className="block rounded-md px-2 py-1.5 hover:bg-muted"
@@ -132,7 +147,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 
 								// Regular route without subroutes
 								return (
-									<NavigationMenuItem key={route.id}>
+									<NavigationMenuItem key={route.path}>
 										<Link
 											href={route.path}
 											className={cn(
@@ -158,7 +173,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 			{mobileMenuOpen && (
 				<nav className="absolute top-full right-0 left-0 z-50 flex flex-col gap-1.5 border-border border-t bg-background p-3 text-xs">
 					{routes.filter(shouldShowRoute).map((route) => (
-						<div key={route.id} className="w-full">
+						<div key={route.path} className="w-full">
 							{route.subRoutes && route.subRoutes.length > 0 ? (
 								<div>
 									<div className="flex w-full items-center">
@@ -198,7 +213,7 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 												.filter(shouldShowSubRoute)
 												.map((subRoute) => (
 													<Link
-														key={subRoute.id}
+														key={subRoute.path}
 														href={subRoute.path}
 														className="block w-full"
 													>

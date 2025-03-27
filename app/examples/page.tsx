@@ -15,7 +15,7 @@ export default function ExamplesPage() {
 	}
 
 	return (
-		<Layout defaultSection="3.0">
+		<Layout defaultSection="examples">
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<ExamplesContent />
 				<ComponentList />

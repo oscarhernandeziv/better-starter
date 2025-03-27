@@ -6,7 +6,7 @@ import { Construction } from "lucide-react";
 
 export default function DataVizExamplePage() {
 	return (
-		<Layout defaultSection="03" defaultSubSection="3.3">
+		<Layout defaultSection="examples" defaultSubSection="dataViz">
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<div className="flex h-full flex-col p-6">
 					<p className="mb-4 text-sm leading-relaxed">

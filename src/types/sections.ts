@@ -1,19 +1,23 @@
 // Define section types
-export type SectionId = "0.0" | "1.0" | "2.0" | "3.0" | "4.0";
+export type SectionName =
+	| "home"
+	| "stack"
+	| "docs"
+	| "examples"
+	| "signIn"
+	| "profile";
 
 // Define subsection types
-export type SubSectionId =
-	| "3.1"
-	| "3.2"
-	| "3.3"
-	| "3.4"
-	| "3.5"
-	| "4.1"
-	| "4.2";
+export type SubSectionName =
+	| "todo"
+	| "authentication"
+	| "dataViz"
+	| "forms"
+	| "infiniteScroll";
 
 // Define section content type
 export type SectionContent = Record<
-	SectionId,
+	SectionName,
 	{
 		title: string;
 		description: string;
@@ -23,10 +27,10 @@ export type SectionContent = Record<
 // Define subsection content type
 export type SubSectionContent = Partial<
 	Record<
-		SectionId,
+		SectionName,
 		Partial<
 			Record<
-				SubSectionId,
+				SubSectionName,
 				{
 					title: string;
 					description: string;
