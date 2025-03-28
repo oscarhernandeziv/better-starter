@@ -13,7 +13,7 @@ export type SubSectionName =
 	| "authentication"
 	| "dataViz"
 	| "forms"
-	| "infiniteScroll";
+	| "noteTaking";
 
 // Define section content type
 export type SectionContent = Record<

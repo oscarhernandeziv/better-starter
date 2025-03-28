@@ -111,17 +111,19 @@ export function Header({ activeSection, setActiveSection }: HeaderProps) {
 
 									return (
 										<NavigationMenuItem key={route.path}>
-											<NavigationMenuTrigger
-												className={cn(
-													buttonVariants(),
-													"h-9",
-													activeSection === route.id &&
-														"bg-foreground text-background",
-												)}
-												onClick={() => handleSectionChange(route.id)}
-											>
-												{route.label}
-											</NavigationMenuTrigger>
+											<Link href={route.path}>
+												<NavigationMenuTrigger
+													className={cn(
+														buttonVariants(),
+														"h-9",
+														activeSection === route.id &&
+															"bg-foreground text-background",
+													)}
+													onClick={() => handleSectionChange(route.id)}
+												>
+													{route.label}
+												</NavigationMenuTrigger>
+											</Link>
 											<NavigationMenuContent>
 												<ul className="flex min-w-[150px] flex-col gap-1 p-1.5">
 													{visibleSubRoutes.map((subRoute) => (

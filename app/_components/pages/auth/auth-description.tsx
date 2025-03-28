@@ -1,6 +1,6 @@
 export function AuthDescription() {
 	return (
-		<div className="flex h-full flex-col border-border border-t p-6 md:border-t-0 md:border-l">
+		<div className="flex h-full flex-col border-border border-r p-6">
 			<h3 className="mb-4 font-bold text-lg">Authentication Options</h3>
 			<p className="mb-4 text-sm leading-relaxed">
 				Better Starter includes a complete authentication system with multiple

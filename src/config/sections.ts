@@ -29,9 +29,9 @@ export const subSectionContent: SubSectionContent = {
 			title: "FORM VALIDATION",
 			description: "Complex form handling with Zod validation",
 		},
-		infiniteScroll: {
-			title: "INFINITE SCROLL",
-			description: "Optimized data loading patterns",
+		noteTaking: {
+			title: "NOTE TAKING APPLICATION",
+			description: "Feature-rich note management system",
 		},
 	},
 };

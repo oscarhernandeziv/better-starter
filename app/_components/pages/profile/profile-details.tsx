@@ -1,10 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
 import {
 	FormError,
 	FormSuccess,
@@ -12,17 +7,16 @@ import {
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
+import {
+	type ProfileUpdateData,
+	ProfileUpdateSchema,
+} from "@/src/domain/schemas/auth";
 import { useAuthState } from "@/src/hooks/useAuthState";
 import { authClient, useSession } from "@/src/lib/auth-client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-
-// Schema for profile update
-const ProfileUpdateSchema = z.object({
-	name: z.string().min(1, "Name is required"),
-	image: z.string().url("Must be a valid URL").optional().nullable(),
-});
-
-type ProfileUpdateData = z.infer<typeof ProfileUpdateSchema>;
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export function ProfileDetails() {
 	const { data: session } = useSession();

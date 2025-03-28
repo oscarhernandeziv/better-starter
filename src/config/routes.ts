@@ -47,9 +47,9 @@ export const routes: Route[] = [
 				path: "/examples/forms",
 			},
 			{
-				id: "infiniteScroll",
-				label: "INFINITE SCROLL",
-				path: "/examples/infinite-scroll",
+				id: "noteTaking",
+				label: "NOTE TAKING",
+				path: "/examples/note-taking",
 			},
 		],
 	},

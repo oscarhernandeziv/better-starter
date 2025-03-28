@@ -4,24 +4,24 @@ import { Layout } from "@/app/_components/shared/layout";
 import { Card, CardContent, CardTitle } from "@/app/_components/ui/card";
 import { Construction } from "lucide-react";
 
-export default function InfiniteScrollExamplePage() {
+export default function NoteTakingExamplePage() {
 	return (
-		<Layout defaultSection="examples" defaultSubSection="infiniteScroll">
+		<Layout defaultSection="examples" defaultSubSection="noteTaking">
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<div className="flex h-full flex-col p-6">
 					<p className="mb-4 text-sm leading-relaxed">
-						This example will showcase efficient data loading patterns using
-						infinite scroll with React Query and Next.js server actions.
+						This example will showcase a full-featured note-taking application
+						built with Next.js server components and client-side interactivity.
 					</p>
 
 					<div className="mb-4">
 						<h3 className="mb-2 font-semibold">Planned Features:</h3>
 						<ul className="list-disc space-y-2 pl-5 text-sm">
-							<li>Virtual scrolling for large datasets</li>
-							<li>Optimized data fetching with pagination</li>
-							<li>Smooth loading animations</li>
-							<li>Server-side filtering and sorting</li>
-							<li>Search functionality</li>
+							<li>Rich text editing capabilities</li>
+							<li>Note organization with tags and folders</li>
+							<li>Search and filter functionality</li>
+							<li>Markdown support</li>
+							<li>Real-time saving and collaboration</li>
 						</ul>
 					</div>
 				</div>
