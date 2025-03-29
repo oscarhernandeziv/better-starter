@@ -25,7 +25,7 @@ import {
 	requestEmailOTP,
 	signInWithEmailOTP,
 } from "@/src/helpers/auth/email-otp";
-import { useAuthState } from "@/src/hooks/useAuthState";
+import { useAuthState } from "@/src/hooks/use-auth-state";
 
 export function SignInForm() {
 	// State to track if OTP has been requested

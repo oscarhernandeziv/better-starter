@@ -3,7 +3,7 @@
 import { Button } from "@/app/_components/ui/button";
 import { cn } from "@/app/_components/utils";
 import type { SocialProvider } from "@/src/domain/schemas/auth";
-import { useAuthState } from "@/src/hooks/useAuthState";
+import { useAuthState } from "@/src/hooks/use-auth-state";
 import { signIn } from "@/src/lib/auth-client";
 
 interface SocialButtonProps {

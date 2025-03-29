@@ -1,0 +1,51 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Next.js 15.2 Best Practices
+
+You are an expert in Next.js 15.2 with the App Router, focusing on modern patterns and performance.
+
+## App Router Architecture
+
+- Use the App Router directory structure with nested routes
+- Implement route groups (parentheses) such as (auth) and (terms) to organize routes without affecting URL paths
+- Use parallel routes for advanced UI patterns when needed
+- Implement intercepting routes for modal patterns
+- Use dynamic route segments with proper validation
+- Leverage route handlers for API functionality in the app/api directory
+
+## Server vs Client Components
+
+- Default to React Server Components (RSC)
+- Minimize 'use client' directives; use them only when necessary for:
+  - Event listeners
+  - Browser-only APIs
+  - React hooks such as useState, useEffect
+  - Client-side state management
+  - Form interactions
+- Place 'use client' at the top of the file
+- Create clear boundaries between server and client components
+- Create small client components for interactive elements within server components
+
+## Project Structure
+
+- Main pages and layouts are in the app directory
+- UI components are in app/_components/ui
+- Shared components are in app/_components/shared
+- Page-specific components are in app/_components/pages
+- Domain logic is in src/domain
+- Database schema and access is in src/db
+- Configuration is in src/config
+- Utilities and helpers are in src/lib and src/helpers
+
+## Performance Optimization
+
+- Use React Suspense for loading states with meaningful fallbacks
+- Implement streaming with suspense boundaries at appropriate levels
+- Use the Next.js Image component with proper sizing and formats
+- Implement proper metadata for SEO using the metadata API
+- Use generateMetadata function for dynamic metadata
+- Leverage Next.js 15.2's partial prerendering
+- Use Turbopack in development for faster refresh rates

@@ -1,0 +1,75 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# TypeScript Guidelines
+
+You are an expert in TypeScript development, focusing on type safety and modern patterns.
+
+## TypeScript Usage
+
+- Use TypeScript 5.8.2 for all code 
+- Prefer interfaces over types for object definitions
+- Avoid enums; use const objects with satisfies operator instead
+- Use discriminated unions for complex state management
+- Leverage TypeScript 5.x features including the const type parameters
+
+## Type Definitions
+
+- Define explicit return types for functions, especially for exported functions
+- Use function type expressions with named parameters
+- Prefer explicit typing over reliance on inference for public APIs
+- Use generics to create reusable, type-safe components and functions
+- Avoid `any` type; use `unknown` when type is uncertain, then narrow appropriately
+- Use satisfies operator for type validation while preserving literal types
+- Place shared types in the src/types directory
+
+## Type Safety
+
+- Use zod for runtime validation that integrates with TypeScript
+- Create type-safe APIs with proper error handling
+- Use @t3-oss/env-nextjs for environment variable validation
+- Implement proper error boundaries with typed error handling
+- Leverage TypeScript template literal types for string manipulation
+- Use the Drizzle ORM type system for database operations
+
+## Example Patterns
+
+```typescript
+// Discriminated union example
+type RequestState<T> = 
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: Error };
+
+// Function with explicit typing
+function fetchData<T>(url: string): Promise<RequestState<T>> {
+  // Implementation
+}
+
+// Using const assertion with satisfies
+const THEMES = {
+  LIGHT: 'light',
+  DARK: 'dark',
+  SYSTEM: 'system',
+} as const satisfies Record<string, string>;
+
+type Theme = typeof THEMES[keyof typeof THEMES];
+
+// Environment variable validation with t3-env
+import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from "zod";
+
+export const env = createEnv({
+  server: {
+    DATABASE_URL: z.string().url(),
+    API_KEY: z.string().min(1),
+  },
+  client: {
+    NEXT_PUBLIC_API_URL: z.string().url(),
+  },
+  runtimeEnv: process.env,
+});
+```

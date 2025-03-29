@@ -1,0 +1,104 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Database Guidelines
+
+You are an expert in database design and implementation using Drizzle ORM with Turso (LibSQL).
+
+## Database Architecture
+
+- Use Drizzle ORM for type-safe database operations
+- Store schema definitions in src/db/schema directory
+- Use the repository pattern for database access
+- Create repository interfaces in src/domain/repositories
+- Implement repositories in src/db/repositories
+- Follow domain-driven design principles for data modeling
+
+## Turso (LibSQL) Configuration
+
+- Configure Turso connection in drizzle.config.ts
+- Use environment variables for database credentials:
+  - TURSO_DB_URL - The URL of the Turso database
+  - TURSO_DB_AUTH_TOKEN - The authentication token for Turso
+- Run database operations with proper environment context
+- Use Turso's edge capabilities for optimal performance
+
+## Schema Definition
+
+- Define schemas using Drizzle's type-safe schema builders
+- Use appropriate column types for data
+- Define proper relationships between tables
+- Implement indexes for performance optimization
+- Use timestamps for created_at and updated_at fields
+
+## Database Operations
+
+- Use Drizzle's query builder for CRUD operations
+- Implement proper transactions for multi-step operations
+- Handle errors gracefully in database operations
+- Use prepared statements for parameterized queries
+- Implement proper connection pooling
+
+## Example Schema Definition
+
+```typescript
+// src/db/schema/user.ts
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { z } from "zod";
+
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  name: text("name"),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull().defaultNow(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().defaultNow(),
+});
+
+// Schema for inserting a user - can be used to validate API requests
+export const insertUserSchema = createInsertSchema(users);
+
+// Schema for selecting a user - can be used to validate API responses
+export const selectUserSchema = createSelectSchema(users);
+
+// Types for inserting and selecting users - can be used for type safety
+export type User = z.infer<typeof selectUserSchema>;
+export type NewUser = z.infer<typeof insertUserSchema>;
+```
+
+## Example Repository Implementation
+
+```typescript
+// src/db/repositories/userRepository.ts
+import { eq } from "drizzle-orm";
+import { db } from "../index";
+import { users, NewUser, User } from "../schema/user";
+import { UserRepository } from "@/domain/repositories/userRepository";
+
+export class DrizzleUserRepository implements UserRepository {
+  async findById(id: string): Promise<User | null> {
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0] || null;
+  }
+
+  async create(data: NewUser): Promise<User> {
+    const result = await db.insert(users).values(data).returning();
+    return result[0];
+  }
+
+  async update(id: string, data: Partial<NewUser>): Promise<User | null> {
+    const result = await db
+      .update(users)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return result[0] || null;
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const result = await db.delete(users).where(eq(users.id, id)).returning({ id: users.id });
+    return result.length > 0;
+  }
+}

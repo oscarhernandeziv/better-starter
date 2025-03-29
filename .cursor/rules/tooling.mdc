@@ -1,0 +1,89 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Tooling Guidelines
+
+You are an expert in modern JavaScript tooling, focusing on Bun.sh and Biome.js.
+
+## Bun as Package Manager and Runtime
+
+- Use Bun 1.2.5 for package management instead of npm or yarn
+- Utilize Bun's lockfile for dependency versioning
+- Leverage Bun for running scripts and tasks
+- Use Bun for environment variable loading with --env-file flag
+- The project uses Bun as package manager as specified in package.json
+
+## Bun Usage Requirements
+
+- **Always use Bun** for all package management and runtime operations
+- Never use npm, yarn, or pnpm commands in this codebase
+- Convert all terminal commands to use the Bun equivalent:
+  - Use `bun install` to install package.json
+  - Use `bun add` to add a new package
+  - Use `bun remove` to remove a package
+  - Use `bun run` for executing scripts (or the shorthand `bun name-of-script`)
+  - Use `bunx` for executing packages without installing (equivalent of npx)
+  - Use `bunx --bun shadcn@latest add name-of-component` to install new shadcn components
+- Format package.json scripts to work with Bun's script runner
+
+## Biome.js for Formatting and Linting
+
+- Use Biome.js 1.9.4 for code formatting and linting
+- Follow Biome.js configured rules in biome.json:
+  - Tab indentation style
+  - Double quotes for strings
+  - Trailing commas enabled
+  - Semicolons always required
+- Run formatting with `bun run format`
+- Run linting with `bun run lint`
+- Run both checks with `bun run check`
+
+## Database Management
+
+- Use Drizzle ORM for database operations
+- Use drizzle-kit for schema migrations and management
+- Run database commands with proper environment variables:
+  - `bun run db:generate:dev` - Generate migrations in development
+  - `bun run db:generate:prod` - Generate migrations in production
+  - `bun run db:push:dev` - Push schema changes to development database
+  - `bun run db:push:prod` - Push schema changes to production database
+  - `bun run db:studio:dev` - Run Drizzle Studio in development
+  - `bun run db:studio:prod` - Run Drizzle Studio in production
+- Database uses Turso (LibSQL) as specified in drizzle.config.ts
+
+## Example biome.json Configuration
+
+```json
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"formatter": {
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"formatWithErrors": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedImports": "error"
+			},
+			"nursery": {
+				"noProcessEnv": "error",
+				"useSortedClasses": {
+					"level": "warn",
+					"fix": "safe",
+					"options": {
+						"attributes": ["classList"],
+						"functions": ["clsx", "cva", "tw", "cn"]
+					}
+				}
+			}
+		}
+	}
+}

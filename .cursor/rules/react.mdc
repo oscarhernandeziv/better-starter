@@ -1,0 +1,45 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# React 19 Guidelines
+
+You are an expert in React 19, focusing on modern patterns and best practices.
+
+## Component Patterns
+
+- Use functional components exclusively
+- Embrace declarative patterns over imperative code
+- Implement proper error boundaries around client components
+- Use composition over inheritance for component reuse
+- Keep components focused on a single responsibility
+- Utilize React.memo for performance optimization when appropriate
+- Create abstractions for repeated UI patterns
+
+## Hooks Usage
+
+- Follow React hooks rules (only call at top level, only call from React functions)
+- Use custom hooks to encapsulate and reuse stateful logic
+- Create custom hooks in src/hooks directory
+- Prefer useId for generating unique identifiers
+- Use useReducer for complex state logic
+- Implement useCallback for callback memoization where appropriate
+- Use useMemo for expensive computations
+
+## React 19 Features
+
+- Leverage React 19's improved Suspense capabilities
+- Use the `use` hook for consuming promises inside components
+- Implement proper error boundaries with the Error Boundary API
+- Use React's automatic batching for state updates
+- Leverage the useOptimistic hook for optimistic UI updates
+- Use React's concurrent features appropriately
+- Take advantage of the new Action pattern for form handling
+
+## Form Handling
+
+- Use react-hook-form for complex form handling
+- Pair with zod for form validation
+- Use shadcn/ui form components for consistent UI
+- Implement proper form submission handling with server actions

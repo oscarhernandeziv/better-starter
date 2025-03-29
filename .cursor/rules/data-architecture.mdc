@@ -1,0 +1,99 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+ # Data Architecture
+
+You are an expert in building data-intensive components following the architecture patterns detailed below.
+
+## Architecture Layers
+
+- **UI Components (app/_components/)**
+  - Presentation-only components with clear boundaries
+  - Components receive data and callbacks as props
+  - Components indicate loading/error states
+  - Follows a hierarchical composition pattern
+
+- **Data Hooks (src/hooks/)**
+  - Custom React hooks that encapsulate data fetching and state management
+  - Use TanStack Query for data fetching, caching, and synchronization
+  - Expose query states (loading, error) and mutation functions
+  - Handle optimistic updates with query invalidation
+
+- **Server Actions (src/actions/)**
+  - Server-side functions with "use server" directive
+  - Handle form submissions and API requests
+  - Validate inputs using Zod schemas
+  - Check authentication and authorization
+  - Return structured responses with success/error flags
+
+- **Service Layer (src/services/)**
+  - Business logic separated from data access
+  - Maps between API and repository layer
+  - Handles data transformations and domain-specific logic
+  - Centralizes business rules
+
+- **Repository Layer (src/db/repositories/)**
+  - Data access layer using Drizzle ORM
+  - Abstracts database queries and operations
+  - Provides type-safe CRUD operations
+  - Enforces data integrity and access control
+
+- **Database Schema (src/db/schema/)**
+  - Defines database tables and relationships using Drizzle ORM
+  - Provides type inference for database entities
+  - Enforces constraints at the database level
+
+## Component Patterns
+
+### Data Flow Pattern
+
+1. **User Interaction** → UI Component captures event
+2. **Action Invocation** → Custom hook calls server action
+3. **Server Processing** → Server action validates and processes request
+4. **Service Processing** → Service applies business logic
+5. **Data Access** → Repository executes database operations
+6. **Response Flow** → Response flows back up through layers
+7. **State Update** → TanStack Query updates cache and triggers re-render
+8. **UI Update** → UI components reflect new state
+
+### Loading State Pattern
+
+- Each data operation exposes loading state (`isLoading`, `isCreating`, etc.)
+- UI components receive and display appropriate loading indicators
+- Loading states cascade through component hierarchy
+
+### Error Handling Pattern
+
+- Errors are caught and structured at each layer
+- Response objects include success flag and error information
+- UI components display appropriate error messages
+
+## Example Implementation
+
+For new data-intensive components:
+
+1. Define database schema in `src/db/schema/`
+2. Create repository layer in `src/db/repositories/`
+3. Implement service layer in `src/services/`
+4. Create server actions in `src/actions/`
+5. Build custom hook in `src/hooks/`
+6. Develop UI components in `app/_components/pages/`
+7. Add page component in `app/` directory structure
+
+## Authentication Integration
+
+- Server actions check for valid session
+- Repository methods include user ID for data access control
+- UI components handle authenticated and unauthenticated states
+- Query access is restricted to authenticated users
+
+## Query Management
+
+- Use TanStack Query for state management
+- Implement proper query invalidation strategies
+- Utilize optimistic updates for improved UX
+- Set appropriate stale times and caching strategies
+
+Following this architecture ensures consistent patterns across data-intensive components, with clear separation of concerns, type safety, and optimal data loading patterns.

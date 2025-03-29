@@ -43,5 +43,5 @@ next-env.d.ts
 
 # ai instructions
 /.claude/
-/.cursor/
 /.instructions/
+/.docs/

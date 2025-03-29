@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/app/_components/ui/button";
-import { useAuthState } from "@/src/hooks/useAuthState";
+import { useAuthState } from "@/src/hooks/use-auth-state";
 import { signIn } from "@/src/lib/auth-client";
 import { useRouter } from "next/navigation";
 

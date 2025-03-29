@@ -11,11 +11,11 @@ import {
 	type ProfileUpdateData,
 	ProfileUpdateSchema,
 } from "@/src/domain/schemas/auth";
-import { useAuthState } from "@/src/hooks/useAuthState";
+import { useAuthState } from "@/src/hooks/use-auth-state";
 import { authClient, useSession } from "@/src/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export function ProfileDetails() {
@@ -42,12 +42,14 @@ export function ProfileDetails() {
 	});
 
 	// Update form values when session changes
-	if (session && !form.getValues().name) {
-		form.reset({
-			name: session.user.name || "",
-			image: session.user.image || "",
-		});
-	}
+	useEffect(() => {
+		if (session && !form.getValues().name) {
+			form.reset({
+				name: session.user.name || "",
+				image: session.user.image || "",
+			});
+		}
+	}, [session, form]);
 
 	// Handle profile update
 	const handleUpdateProfile = async (data: ProfileUpdateData) => {
