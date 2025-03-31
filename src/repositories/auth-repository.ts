@@ -1,5 +1,5 @@
-import { db } from "@/src/db";
-import * as schema from "@/src/db/schema/auth";
+import { db } from "@/drizzle";
+import * as schema from "@/drizzle/schema/auth";
 import type { Account, Session, User } from "@/src/entities/models/auth";
 import { eq } from "drizzle-orm";
 

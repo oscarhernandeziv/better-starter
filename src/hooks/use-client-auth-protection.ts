@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "@/src/config/auth/auth-client";
+import { useSession } from "@/src/lib/auth-client";
 import { useCallback } from "react";
 
 /**

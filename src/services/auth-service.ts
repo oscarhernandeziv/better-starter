@@ -9,9 +9,9 @@ import type {
 	Session,
 	User,
 } from "@/src/entities/models/auth";
+import { auth } from "@/src/lib/auth";
 import { AuthRepository } from "@/src/repositories/auth-repository";
 import { headers } from "next/headers";
-import { auth } from "../config/auth";
 
 export const AuthService = {
 	/**

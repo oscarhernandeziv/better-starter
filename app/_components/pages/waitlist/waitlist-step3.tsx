@@ -10,13 +10,19 @@ import {
 	FormMessage,
 } from "@/app/_components/ui/form";
 import {
-	type WaitlistStep3Data,
-	type WaitlistStep3Props,
-	interestOptions,
-	waitlistStep3Schema,
-} from "@/src/entities/models/waitlist";
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/app/_components/ui/select";
+import { Textarea } from "@/app/_components/ui/textarea";
+import type { WaitlistStep3Data } from "@/src/entities/models/waitlist";
+import { waitlistStep3Schema } from "@/src/entities/models/waitlist";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import type { WaitlistStep3Props } from "./types";
+import { interestOptions } from "./types";
 
 export function WaitlistStep3({
 	defaultValues,
@@ -55,18 +61,21 @@ export function WaitlistStep3({
 						<FormItem>
 							<FormLabel>What interests you most? (Optional)</FormLabel>
 							<FormControl>
-								<select
-									className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-									{...field}
-									value={field.value || ""}
+								<Select
+									onValueChange={field.onChange}
+									defaultValue={field.value}
 								>
-									<option value="">Please select</option>
-									{interestOptions.map((option) => (
-										<option key={option.value} value={option.value}>
-											{option.label}
-										</option>
-									))}
-								</select>
+									<SelectTrigger>
+										<SelectValue placeholder="Please select" />
+									</SelectTrigger>
+									<SelectContent>
+										{interestOptions.map((option) => (
+											<SelectItem key={option.value} value={option.value}>
+												{option.label}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -80,9 +89,9 @@ export function WaitlistStep3({
 						<FormItem>
 							<FormLabel>Additional Information (Optional)</FormLabel>
 							<FormControl>
-								<textarea
-									className="flex min-h-20 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+								<Textarea
 									placeholder="Tell us more about your use case or any specific requirements"
+									className="min-h-20"
 									{...field}
 									value={field.value || ""}
 								/>

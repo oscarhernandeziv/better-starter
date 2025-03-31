@@ -1,6 +1,5 @@
 "use server";
 
-import { auth } from "@/src/config/auth";
 import { UnauthorizedError } from "@/src/entities/errors/common";
 import { type Todo, createTodoSchema } from "@/src/entities/models/todo";
 import {
@@ -8,14 +7,12 @@ import {
 	handleAsync,
 	handleAuthenticatedAsync,
 } from "@/src/lib/result";
+import { AuthService } from "@/src/services/auth-service";
 import { TodoService } from "@/src/services/todo-service";
-import { headers } from "next/headers";
 
 // Get the authenticated user or throw an error
 async function getAuthenticatedUser() {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
+	const session = await AuthService.getSession();
 
 	if (!session?.user?.id) {
 		throw new UnauthorizedError();

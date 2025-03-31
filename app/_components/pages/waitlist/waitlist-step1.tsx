@@ -12,11 +12,11 @@ import {
 import { Input } from "@/app/_components/ui/input";
 import {
 	type WaitlistStep1Data,
-	type WaitlistStep1Props,
 	waitlistStep1Schema,
 } from "@/src/entities/models/waitlist";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import type { WaitlistStep1Props } from "./types";
 
 export function WaitlistStep1({
 	defaultValues,

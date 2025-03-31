@@ -1,5 +1,5 @@
-import { db } from "@/src/db";
-import { todo } from "@/src/db/schema/todo";
+import { db } from "@/drizzle";
+import { todo } from "@/drizzle/schema/todo";
 import type { CreateTodo, Todo, UpdateTodo } from "@/src/entities/models/todo";
 import { and, eq } from "drizzle-orm";
 

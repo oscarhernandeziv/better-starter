@@ -41,6 +41,6 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"ignore": ["src/config/env.ts"]
+		"ignore": ["env.ts"]
 	}
 }

@@ -1,7 +1,7 @@
-import { env } from "@/src/config/env";
-import { resend } from "@/src/config/resend";
-import { db } from "@/src/db";
-import * as schema from "@/src/db/schema/auth";
+import { db } from "@/drizzle";
+import * as schema from "@/drizzle/schema/auth";
+import { env } from "@/env";
+import { resend } from "@/src/lib/resend";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";

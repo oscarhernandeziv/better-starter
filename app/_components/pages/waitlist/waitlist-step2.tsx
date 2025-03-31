@@ -11,13 +11,18 @@ import {
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
 import {
-	type WaitlistStep2Data,
-	type WaitlistStep2Props,
-	referralOptions,
-	waitlistStep2Schema,
-} from "@/src/entities/models/waitlist";
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/app/_components/ui/select";
+import type { WaitlistStep2Data } from "@/src/entities/models/waitlist";
+import { waitlistStep2Schema } from "@/src/entities/models/waitlist";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import type { WaitlistStep2Props } from "./types";
+import { referralOptions } from "./types";
 
 export function WaitlistStep2({
 	defaultValues,
@@ -75,18 +80,21 @@ export function WaitlistStep2({
 						<FormItem>
 							<FormLabel>How did you hear about us? (Optional)</FormLabel>
 							<FormControl>
-								<select
-									className="flex h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30"
-									{...field}
-									value={field.value || ""}
+								<Select
+									onValueChange={field.onChange}
+									defaultValue={field.value}
 								>
-									<option value="">Please select</option>
-									{referralOptions.map((option) => (
-										<option key={option.value} value={option.value}>
-											{option.label}
-										</option>
-									))}
-								</select>
+									<SelectTrigger>
+										<SelectValue placeholder="Please select" />
+									</SelectTrigger>
+									<SelectContent>
+										{referralOptions.map((option) => (
+											<SelectItem key={option.value} value={option.value}>
+												{option.label}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
 							</FormControl>
 							<FormMessage />
 						</FormItem>

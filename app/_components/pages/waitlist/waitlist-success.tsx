@@ -8,10 +8,16 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/app/_components/ui/card";
-import type { WaitlistSuccessProps } from "@/src/entities/models/waitlist";
+import type { WaitlistFormData } from "@/src/entities/models/waitlist";
 import { CheckCircle } from "lucide-react";
 
-export function WaitlistSuccess({ data, onReset }: WaitlistSuccessProps) {
+export function WaitlistSuccess({
+	data,
+	onReset,
+}: {
+	data: WaitlistFormData;
+	onReset: () => void;
+}) {
 	return (
 		<Card className="w-full">
 			<CardHeader className="pb-2">

@@ -1,10 +1,7 @@
-import { db } from "@/src/db";
-import { waitlist } from "@/src/db/schema/waitlist";
+import { db } from "@/drizzle";
+import { waitlist } from "@/drizzle/schema/waitlist";
 import { DatabaseError } from "@/src/entities/errors/common";
-import type {
-	WaitlistEntry,
-	WaitlistFormData,
-} from "@/src/entities/models/waitlist";
+import type { WaitlistFormData } from "@/src/entities/models/waitlist";
 import { eq } from "drizzle-orm";
 
 /**
@@ -14,7 +11,7 @@ import { eq } from "drizzle-orm";
  */
 export async function createWaitlistEntry(
 	data: WaitlistFormData,
-): Promise<WaitlistEntry> {
+): Promise<WaitlistFormData> {
 	try {
 		const result = await db.insert(waitlist).values(data).returning();
 
@@ -22,7 +19,7 @@ export async function createWaitlistEntry(
 			throw new DatabaseError("Failed to create waitlist entry");
 		}
 
-		return result[0] as WaitlistEntry;
+		return result[0] as WaitlistFormData;
 	} catch (error) {
 		if (
 			error instanceof Error &&
@@ -44,7 +41,7 @@ export async function createWaitlistEntry(
  */
 export async function getWaitlistEntryByEmail(
 	email: string,
-): Promise<WaitlistEntry | null> {
+): Promise<WaitlistFormData | null> {
 	try {
 		const result = await db
 			.select()
@@ -52,7 +49,7 @@ export async function getWaitlistEntryByEmail(
 			.where(eq(waitlist.email, email))
 			.limit(1);
 
-		return (result[0] as WaitlistEntry) || null;
+		return (result[0] as WaitlistFormData) || null;
 	} catch (error) {
 		throw new DatabaseError(
 			error instanceof Error ? error.message : "Unknown database error",
@@ -68,8 +65,8 @@ export async function getWaitlistEntryByEmail(
  */
 export async function updateWaitlistEntryStatus(
 	id: number,
-	status: WaitlistEntry["status"],
-): Promise<WaitlistEntry> {
+	status: WaitlistFormData["status"],
+): Promise<WaitlistFormData> {
 	try {
 		const result = await db
 			.update(waitlist)
@@ -81,7 +78,7 @@ export async function updateWaitlistEntryStatus(
 			throw new DatabaseError("Waitlist entry not found");
 		}
 
-		return result[0] as WaitlistEntry;
+		return result[0] as WaitlistFormData;
 	} catch (error) {
 		throw new DatabaseError(
 			error instanceof Error ? error.message : "Unknown database error",

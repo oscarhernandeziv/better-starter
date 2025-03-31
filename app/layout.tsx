@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { QueryProvider } from "@/src/providers/query-provider";
-import { ThemeProvider } from "./_components/theme/theme-provider";
+import { QueryProvider } from "@/app/providers/query-provider";
 import { Toaster } from "./_components/ui/sonner";
+import { ThemeProvider } from "./providers/theme-provider";
 
 const geistMono = Geist_Mono({
 	variable: "--font-geist-mono",
@@ -47,7 +47,7 @@ export default function RootLayout({
 							visibleToasts={5}
 							expand={false}
 							toastOptions={{
-								duration: 4000,
+								duration: 1000,
 							}}
 						/>
 					</QueryProvider>

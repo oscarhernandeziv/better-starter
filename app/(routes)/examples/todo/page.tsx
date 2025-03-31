@@ -4,8 +4,8 @@ import { TodoAuthPrompt } from "@/app/_components/pages/todo/todo-auth-prompt";
 import { TodoContent } from "@/app/_components/pages/todo/todo-content";
 import { TodoInfo } from "@/app/_components/pages/todo/todo-info";
 import { Layout } from "@/app/_components/shared/layout";
+import { QueryProvider } from "@/app/providers/query-provider";
 import { useClientAuthProtection } from "@/src/hooks/use-client-auth-protection";
-import { QueryProvider } from "@/src/providers/query-provider";
 
 export default function TodoPage() {
 	const { isAuthenticated, isLoading } = useClientAuthProtection();

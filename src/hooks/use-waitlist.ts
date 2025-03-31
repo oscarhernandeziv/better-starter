@@ -13,8 +13,8 @@ import type {
 	WaitlistStep2Data,
 	WaitlistStep3Data,
 } from "@/src/entities/models/waitlist";
+import { useResult } from "@/src/hooks/use-result";
 import { useCallback, useState } from "react";
-import { toast } from "sonner";
 
 interface UseWaitlistReturn {
 	currentStep: WaitlistStep;
@@ -32,150 +32,124 @@ interface UseWaitlistReturn {
  * Custom hook for managing the multi-step waitlist form
  */
 export function useWaitlist(): UseWaitlistReturn {
-	// Track the current step
+	const { createMutation } = useResult();
 	const [currentStep, setCurrentStep] = useState<WaitlistStep>(1);
-
-	// Store form data across steps
 	const [formData, setFormData] = useState<Partial<WaitlistFormData>>({});
-
-	// Track submission state
-	const [isSubmitting, setIsSubmitting] = useState(false);
-
-	// Track validation errors
 	const [errors, setErrors] = useState<Record<string, string>>({});
+
+	// Step 1 submission mutation
+	const step1Mutation = createMutation(
+		(data: WaitlistStep1Data) => validateWaitlistStep1(data),
+		{
+			loadingMessage: "Validating step 1...",
+			getSuccessMessage: () => "Step 1 validated successfully",
+			getErrorMessage: (error) => error.message || "Step 1 validation failed",
+			minimumLoadingTime: 400,
+			defaultErrorMessage: "Failed to validate step 1",
+		},
+	);
+
+	// Step 2 submission mutation
+	const step2Mutation = createMutation(
+		(data: WaitlistStep2Data) => processWaitlistStep2(data),
+		{
+			loadingMessage: "Validating step 2...",
+			getSuccessMessage: () => "Step 2 validated successfully",
+			getErrorMessage: (error) => error.message || "Step 2 validation failed",
+			minimumLoadingTime: 400,
+			defaultErrorMessage: "Failed to validate step 2",
+		},
+	);
+
+	// Step 3 submission mutation
+	const step3Mutation = createMutation(
+		(data: WaitlistStep3Data) => processWaitlistStep3(data),
+		{
+			loadingMessage: "Validating step 3...",
+			getSuccessMessage: () => "Step 3 validated successfully",
+			getErrorMessage: (error) => error.message || "Step 3 validation failed",
+			minimumLoadingTime: 400,
+			defaultErrorMessage: "Failed to validate step 3",
+		},
+	);
+
+	// Final form submission mutation
+	const submitFormMutation = createMutation(
+		(data: WaitlistFormData) => submitWaitlistForm(data),
+		{
+			loadingMessage: "Submitting form...",
+			getSuccessMessage: () => "Thank you for joining our waitlist!",
+			getErrorMessage: (error) => error.message || "Failed to submit form",
+			minimumLoadingTime: 600,
+			defaultErrorMessage: "Failed to submit form",
+		},
+	);
 
 	// Step 1 submission handler
 	const submitStep1 = useCallback(
 		async (data: WaitlistStep1Data): Promise<boolean> => {
-			setIsSubmitting(true);
-			setErrors({});
-
-			try {
-				const result = await validateWaitlistStep1(data);
-
-				if (result.success) {
-					// Update form data
-					setFormData((prev) => ({ ...prev, ...data }));
-					// Move to next step
-					setCurrentStep(2);
-					return true;
-				}
-
-				// Set error message
-				setErrors({ form: result.error || "Validation failed" });
-				toast.error(result.error || "Please fix the errors in the form");
-				return false;
-			} catch (error) {
-				setErrors({ form: "An unexpected error occurred" });
-				toast.error("Something went wrong. Please try again.");
-				return false;
-			} finally {
-				setIsSubmitting(false);
+			const result = await step1Mutation.mutateAsync(data);
+			if (result.success) {
+				setFormData((prev) => ({ ...prev, ...data }));
+				setCurrentStep(2);
+				return true;
 			}
+			return false;
 		},
-		[],
+		[step1Mutation],
 	);
 
 	// Step 2 submission handler
 	const submitStep2 = useCallback(
 		async (data: WaitlistStep2Data): Promise<boolean> => {
-			setIsSubmitting(true);
-			setErrors({});
-
-			try {
-				const result = await processWaitlistStep2(data);
-
-				if (result.success) {
-					// Update form data
-					setFormData((prev) => ({ ...prev, ...data }));
-					// Move to next step
-					setCurrentStep(3);
-					return true;
-				}
-
-				// Set error message
-				setErrors({ form: result.error || "Validation failed" });
-				toast.error(result.error || "Please fix the errors in the form");
-				return false;
-			} catch (error) {
-				setErrors({ form: "An unexpected error occurred" });
-				toast.error("Something went wrong. Please try again.");
-				return false;
-			} finally {
-				setIsSubmitting(false);
+			const result = await step2Mutation.mutateAsync(data);
+			if (result.success) {
+				setFormData((prev) => ({ ...prev, ...data }));
+				setCurrentStep(3);
+				return true;
 			}
+			return false;
 		},
-		[],
+		[step2Mutation],
 	);
 
-	// Step 3 submission handler (final step)
+	// Step 3 submission handler
 	const submitStep3 = useCallback(
 		async (data: WaitlistStep3Data): Promise<boolean> => {
-			setIsSubmitting(true);
-			setErrors({});
-
-			try {
-				// First validate step 3
-				const validateResult = await processWaitlistStep3(data);
-
-				if (!validateResult.success) {
-					setErrors({ form: validateResult.error || "Validation failed" });
-					toast.error(
-						validateResult.error || "Please fix the errors in the form",
-					);
-					return false;
-				}
-
-				// Update form data with final step data
-				const completeFormData: WaitlistFormData = {
-					...(formData as WaitlistStep1Data), // Step 1 data is required
-					...(formData as WaitlistStep2Data), // Step 2 data is optional
-					...data, // Step 3 data
-				};
-
-				// Submit the complete form
-				const submitResult = await submitWaitlistForm(completeFormData);
-
-				if (submitResult.success) {
-					// Set final form data
-					setFormData(completeFormData);
-					// Show success step
-					setCurrentStep("success");
-					toast.success("Thank you for joining our waitlist!");
-					return true;
-				}
-
-				// Set error message
-				setErrors({ form: submitResult.error || "Submission failed" });
-				toast.error(
-					submitResult.error || "Failed to join waitlist. Please try again.",
-				);
+			const validateResult = await step3Mutation.mutateAsync(data);
+			if (!validateResult.success) {
 				return false;
-			} catch (error) {
-				setErrors({ form: "An unexpected error occurred" });
-				toast.error("Something went wrong. Please try again.");
-				return false;
-			} finally {
-				setIsSubmitting(false);
 			}
+
+			const completeFormData: WaitlistFormData = {
+				...(formData as WaitlistStep1Data),
+				...(formData as WaitlistStep2Data),
+				...data,
+			};
+
+			const submitResult =
+				await submitFormMutation.mutateAsync(completeFormData);
+			if (submitResult.success) {
+				setFormData(completeFormData);
+				setCurrentStep("success");
+				return true;
+			}
+			return false;
 		},
-		[formData],
+		[formData, step3Mutation, submitFormMutation],
 	);
 
 	// Function to manually go to a step (for back button)
 	const goToStep = useCallback(
 		(step: WaitlistStep) => {
-			// Only allow going back or to success
 			if (step === "success") {
 				setCurrentStep(step);
-				return;
-			}
-
-			// Handle numeric steps
-			if (typeof currentStep === "number" && typeof step === "number") {
-				if (step <= currentStep) {
-					setCurrentStep(step);
-				}
+			} else if (
+				typeof step === "number" &&
+				typeof currentStep === "number" &&
+				step <= currentStep
+			) {
+				setCurrentStep(step);
 			}
 		},
 		[currentStep],
@@ -187,6 +161,12 @@ export function useWaitlist(): UseWaitlistReturn {
 		setErrors({});
 		setCurrentStep(1);
 	}, []);
+
+	const isSubmitting =
+		step1Mutation.isPending ||
+		step2Mutation.isPending ||
+		step3Mutation.isPending ||
+		submitFormMutation.isPending;
 
 	return {
 		currentStep,

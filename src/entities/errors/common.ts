@@ -29,14 +29,12 @@ export class UnauthorizedError extends AppError {
 	}
 }
 
-// Consolidate auth errors here rather than in separate file
 export class AuthenticationError extends AppError {
 	constructor(message = "Authentication failed", code?: string) {
 		super(message, 401, code);
 	}
 }
 
-// Add common error types that were previously subclasses
 export class InvalidCredentialsError extends AppError {
 	constructor(message = "Invalid credentials") {
 		super(message, 401, "CredentialsError");

@@ -1,4 +1,4 @@
-import { env } from "@/src/config/env";
+import { env } from "@/env";
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 

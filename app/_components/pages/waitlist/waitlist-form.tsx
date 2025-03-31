@@ -1,5 +1,6 @@
 "use client";
 
+import { Alert, AlertDescription } from "@/app/_components/ui/alert";
 import { Card, CardContent } from "@/app/_components/ui/card";
 import type {
 	WaitlistFormData,
@@ -62,11 +63,11 @@ export function WaitlistForm() {
 
 	// Render the appropriate step component
 	const renderStep = () => {
-		// If we have a form error, display it as a note above the form
+		// If we have a form error, display it as an alert
 		const errorMessage = errors.form ? (
-			<div className="mb-4 rounded-md bg-destructive/15 p-3 text-destructive text-sm">
-				{errors.form}
-			</div>
+			<Alert variant="destructive" className="mb-4">
+				<AlertDescription>{errors.form}</AlertDescription>
+			</Alert>
 		) : null;
 
 		switch (currentStep) {
