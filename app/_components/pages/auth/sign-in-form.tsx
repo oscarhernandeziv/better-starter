@@ -1,15 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-
 import { AnonymousButton } from "@/app/_components/pages/auth/anonymous-button";
-import {
-	FormError,
-	FormSuccess,
-} from "@/app/_components/pages/auth/form-feedback";
 import { GitHubIcon, GoogleIcon } from "@/app/_components/pages/auth/icons";
 import { SocialButton } from "@/app/_components/pages/auth/social-button";
 import { Button } from "@/app/_components/ui/button";
@@ -17,83 +8,60 @@ import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
 import {
 	type EmailOTPRequest,
-	EmailOTPRequestSchema,
 	type EmailOTPSignIn,
-	EmailOTPSignInSchema,
-} from "@/src/domain/schemas/auth";
-import {
-	requestEmailOTP,
-	signInWithEmailOTP,
-} from "@/src/helpers/auth/email-otp";
-import { useAuthState } from "@/src/hooks/use-auth-state";
+	emailOTPRequestSchema,
+	emailOTPSignInSchema,
+} from "@/src/entities/models/auth";
+import { useAuth } from "@/src/hooks/use-auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 export function SignInForm() {
 	// State to track if OTP has been requested
 	const [otpRequested, setOtpRequested] = useState(false);
 	const [email, setEmail] = useState("");
-
-	// Router instance for navigation
+	// Use the auth hook for authentication actions and state
+	const { sendOTP, signInWithOTP, isLoading, session, isSessionLoading } =
+		useAuth();
 	const router = useRouter();
 
-	// Authentication state hooks for managing feedback and loading state
-	const {
-		error,
-		success,
-		loading,
-		setSuccess,
-		setError,
-		setLoading,
-		resetState,
-	} = useAuthState();
+	// Effect to handle redirection after successful login
+	useEffect(() => {
+		if (session?.user && !isSessionLoading) {
+			router.push("/");
+			router.refresh();
+		}
+	}, [session, isSessionLoading, router]);
 
 	// Request OTP handler
 	const handleRequestOTP = async (data: EmailOTPRequest) => {
-		resetState();
-		setLoading(true);
+		// Store email for the next step
+		setEmail(data.email);
 
-		try {
-			const response = await requestEmailOTP(data.email);
+		const formData = new FormData();
+		formData.append("email", data.email);
 
-			if (response?.data) {
-				setEmail(data.email);
-				setSuccess("OTP has been sent to your email.");
-				setOtpRequested(true);
-			} else if (response?.error) {
-				setError(response.error.message);
-			}
-		} catch (err) {
-			console.error(err);
-			setError("Something went wrong. Please try again.");
-		} finally {
-			setLoading(false);
-		}
+		// Use the sendOTP method
+		sendOTP(formData);
+		setOtpRequested(true);
 	};
 
 	// Verify OTP and sign in handler
 	const handleVerifyOTP = async (data: EmailOTPSignIn) => {
-		resetState();
-		setLoading(true);
+		const formData = new FormData();
+		formData.append("email", data.email);
+		formData.append("otp", data.otp);
 
-		try {
-			const response = await signInWithEmailOTP(data.email, data.otp);
-
-			if (response?.data) {
-				setSuccess("Logged in successfully.");
-				router.replace("/profile");
-			} else if (response?.error) {
-				setError(response.error.message);
-			}
-		} catch (err) {
-			console.error(err);
-			setError("Something went wrong. Please try again.");
-		} finally {
-			setLoading(false);
-		}
+		// Use the signInWithOTP method
+		signInWithOTP(formData);
+		// Redirect will happen via the useEffect hook when session is updated
 	};
 
 	// OTP Request Form
 	const otpRequestForm = useForm<EmailOTPRequest>({
-		resolver: zodResolver(EmailOTPRequestSchema),
+		resolver: zodResolver(emailOTPRequestSchema),
 		defaultValues: {
 			email: "",
 		},
@@ -101,7 +69,7 @@ export function SignInForm() {
 
 	// OTP Verification Form
 	const otpVerificationForm = useForm<EmailOTPSignIn>({
-		resolver: zodResolver(EmailOTPSignInSchema),
+		resolver: zodResolver(emailOTPSignInSchema),
 		defaultValues: {
 			email: email,
 			otp: "",
@@ -132,7 +100,7 @@ export function SignInForm() {
 								id="email"
 								{...otpRequestForm.register("email")}
 								placeholder="email@example.com"
-								disabled={loading}
+								disabled={isLoading}
 							/>
 							{otpRequestForm.formState.errors.email && (
 								<p className="text-destructive text-sm">
@@ -141,11 +109,8 @@ export function SignInForm() {
 							)}
 						</div>
 
-						<FormError message={error} />
-						<FormSuccess message={success} />
-
-						<Button disabled={loading} type="submit" className="w-full">
-							Send OTP
+						<Button disabled={isLoading} type="submit" className="w-full">
+							Continue with email
 						</Button>
 					</form>
 				) : (
@@ -168,7 +133,7 @@ export function SignInForm() {
 								id="otp"
 								{...otpVerificationForm.register("otp")}
 								placeholder="Enter OTP from your email"
-								disabled={loading}
+								disabled={isLoading}
 							/>
 							{otpVerificationForm.formState.errors.otp && (
 								<p className="text-destructive text-sm">
@@ -180,8 +145,10 @@ export function SignInForm() {
 									type="button"
 									variant="link"
 									className="h-auto p-0 text-primary text-xs"
-									onClick={async () => {
-										await handleRequestOTP({ email });
+									onClick={() => {
+										const formData = new FormData();
+										formData.append("email", email);
+										sendOTP(formData);
 									}}
 								>
 									Resend OTP
@@ -189,11 +156,8 @@ export function SignInForm() {
 							</div>
 						</div>
 
-						<FormError message={error} />
-						<FormSuccess message={success} />
-
-						<Button disabled={loading} type="submit" className="w-full">
-							Verify OTP & Sign In
+						<Button disabled={isLoading} type="submit" className="w-full">
+							Complete Sign In
 						</Button>
 
 						<Button
@@ -201,7 +165,6 @@ export function SignInForm() {
 							variant="outline"
 							className="w-full"
 							onClick={() => {
-								resetState();
 								setOtpRequested(false);
 							}}
 						>

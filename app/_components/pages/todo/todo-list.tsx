@@ -1,6 +1,6 @@
 "use client";
 
-import type { Todo } from "@/src/db/repositories/todo-repository";
+import type { Todo } from "@/src/entities/models/todo";
 import { ClipboardList } from "lucide-react";
 import { TodoItem } from "./todo-item";
 

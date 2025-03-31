@@ -3,9 +3,9 @@ description:
 globs: 
 alwaysApply: false
 ---
- # Data Architecture
+# Todo List Architecture
 
-You are an expert in building data-intensive components following the architecture patterns detailed below.
+You are an expert in building data-intensive components following the architecture patterns used in the Todo List feature.
 
 ## Architecture Layers
 
@@ -96,4 +96,4 @@ For new data-intensive components:
 - Utilize optimistic updates for improved UX
 - Set appropriate stale times and caching strategies
 
-Following this architecture ensures consistent patterns across data-intensive components, with clear separation of concerns, type safety, and optimal data loading patterns.
+Following this architecture ensures consistent patterns across data-intensive components, with clear separation of concerns, type safety, and optimal data loading patterns. 

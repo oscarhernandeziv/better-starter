@@ -1,11 +1,4 @@
-import { routes } from "@/src/config/routes";
-import Link from "next/link";
-
 export function ComponentList() {
-	// Get the examples route which contains subRoutes
-	const examplesRoute = routes.find((route) => route.id === "examples");
-	const subRoutes = examplesRoute?.subRoutes || [];
-
 	return (
 		<div className="flex h-full flex-col border-border border-t p-6 md:border-t-0 md:border-l">
 			<h3 className="mb-4 font-bold text-lg">Examples</h3>
@@ -14,36 +7,58 @@ export function ComponentList() {
 				showcase the capabilities of our stack:
 			</p>
 
-			<div className="mb-6">
-				<h4 className="mb-2 font-semibold">Available Examples</h4>
-				<ul className="list-disc space-y-2 pl-5 text-sm">
-					{subRoutes
-						.filter((route) => route.id === "todo")
-						.map((route) => (
-							<li key={route.id}>
-								<Link
-									href={route.path}
-									className="text-primary hover:underline"
-								>
-									{route.label} - Full Stack CRUD application
-								</Link>
-							</li>
-						))}
-				</ul>
-			</div>
-
-			<div>
-				<h4 className="mb-2 font-semibold">Coming Soon</h4>
-				<ul className="list-disc space-y-2 pl-5 text-muted-foreground text-sm">
-					{subRoutes
-						.filter((route) => route.id !== "todo")
-						.map((route) => (
-							<li key={route.id}>
-								<span>{route.label}</span>
-							</li>
-						))}
-				</ul>
+			<div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+				<ExampleCard
+					title="Authentication"
+					description="User management with better-auth for secure, modern auth flows."
+					href="/examples/profile"
+				/>
+				<ExampleCard
+					title="Todos"
+					description="Data fetching and async state management with TanStack Query."
+					href="/examples/todo"
+				/>
+				<ExampleCard
+					title="Leaderboard"
+					description="Global checkbox clicker leaderboard using Turso's edge-friendly database."
+					href="/examples/leaderboard"
+				/>
+				<ExampleCard
+					title="Waitlist"
+					description="Type-safe and validated form handling with TanStack Form."
+					href="/examples/waitlist"
+				/>
+				<ExampleCard
+					title="Products"
+					description="Lightweight table filtering and pagination with Tanstack Table."
+					href="/examples/product"
+				/>
+				<ExampleCard
+					title="Data Viz"
+					description="Beautiful charts with shadcn/ui components and Motion animations."
+					href="/examples/visualization"
+				/>
 			</div>
 		</div>
+	);
+}
+
+interface ExampleCardProps {
+	title: string;
+	description: string;
+	href: string;
+}
+
+function ExampleCard({ title, description, href }: ExampleCardProps) {
+	return (
+		<a
+			href={href}
+			className="group flex flex-col rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary hover:shadow-md"
+		>
+			<h4 className="mb-1 font-semibold text-lg group-hover:text-primary">
+				{title}
+			</h4>
+			<p className="text-muted-foreground">{description}</p>
+		</a>
 	);
 }

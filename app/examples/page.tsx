@@ -4,7 +4,7 @@ import { Layout } from "@/app/_components/shared/layout";
 
 export default function ExamplesPage() {
 	return (
-		<Layout defaultSection="examples">
+		<Layout>
 			<div className="grid h-full grid-cols-1 gap-0 md:grid-cols-2">
 				<ExamplesContent />
 				<ComponentList />

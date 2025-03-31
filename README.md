@@ -11,12 +11,3 @@ Development environment variables (localhost URLs) are defined in `.env.developm
 ### Production Environment
 
 Production environment variables (production URLs) are defined in `.env.production` and automatically loaded when deploying to production.
-
-### Environment Helper Functions
-
-Environment-specific values can be accessed using helper functions in `src/config/env.ts`:
-
-- `getAppUrl()` - Returns the appropriate app URL for the current environment
-- `getAuthUrl()` - Returns the appropriate auth URL for the current environment
-- `isDevelopment()` - Returns true if in development environment
-- `isProduction()` - Returns true if in production environment

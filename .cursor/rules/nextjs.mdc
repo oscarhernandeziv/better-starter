@@ -49,3 +49,6 @@ You are an expert in Next.js 15.2 with the App Router, focusing on modern patter
 - Use generateMetadata function for dynamic metadata
 - Leverage Next.js 15.2's partial prerendering
 - Use Turbopack in development for faster refresh rates
+
+
+

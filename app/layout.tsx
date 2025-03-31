@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "next-themes";
+import { QueryProvider } from "@/src/providers/query-provider";
+import { ThemeProvider } from "./_components/theme/theme-provider";
+import { Toaster } from "./_components/ui/sonner";
 
 const geistMono = Geist_Mono({
 	variable: "--font-geist-mono",
@@ -35,7 +37,20 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					{children}
+					<QueryProvider>
+						{children}
+						<Toaster
+							position="bottom-right"
+							richColors
+							invert
+							closeButton
+							visibleToasts={5}
+							expand={false}
+							toastOptions={{
+								duration: 4000,
+							}}
+						/>
+					</QueryProvider>
 				</ThemeProvider>
 			</body>
 		</html>

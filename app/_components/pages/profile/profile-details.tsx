@@ -1,40 +1,26 @@
 "use client";
 
-import {
-	FormError,
-	FormSuccess,
-} from "@/app/_components/pages/auth/form-feedback";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
+import { useSession } from "@/src/config/auth/auth-client";
 import {
 	type ProfileUpdateData,
-	ProfileUpdateSchema,
-} from "@/src/domain/schemas/auth";
-import { useAuthState } from "@/src/hooks/use-auth-state";
-import { authClient, useSession } from "@/src/lib/auth-client";
+	profileUpdateSchema,
+} from "@/src/entities/models/auth";
+import { useAuth } from "@/src/hooks/use-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export function ProfileDetails() {
 	const { data: session } = useSession();
-	const router = useRouter();
 	const [isEditing, setIsEditing] = useState(false);
-	const {
-		error,
-		success,
-		loading,
-		setError,
-		setSuccess,
-		setLoading,
-		resetState,
-	} = useAuthState();
+	const { updateProfile, signOut, isLoading } = useAuth();
 
 	// Initialize the form with user data
 	const form = useForm<ProfileUpdateData>({
-		resolver: zodResolver(ProfileUpdateSchema),
+		resolver: zodResolver(profileUpdateSchema),
 		defaultValues: {
 			name: session?.user?.name || "",
 			image: session?.user?.image || "",
@@ -53,23 +39,12 @@ export function ProfileDetails() {
 
 	// Handle profile update
 	const handleUpdateProfile = async (data: ProfileUpdateData) => {
-		resetState();
-		setLoading(true);
+		const formData = new FormData();
+		formData.append("name", data.name);
+		formData.append("image", data.image || "");
 
-		try {
-			await authClient.updateUser({
-				name: data.name,
-				image: data.image,
-			});
-
-			setSuccess("Profile updated successfully");
-			setIsEditing(false);
-		} catch (err) {
-			console.error(err);
-			setError("Something went wrong. Please try again.");
-		} finally {
-			setLoading(false);
-		}
+		updateProfile(formData);
+		setIsEditing(false);
 	};
 
 	return (
@@ -78,13 +53,8 @@ export function ProfileDetails() {
 				<h3 className="font-bold text-lg">Account Information</h3>
 				<Button
 					variant="outline"
-					onClick={async () => {
-						await authClient.signOut({
-							fetchOptions: {
-								onSuccess: () => router.push("/sign-in"),
-							},
-						});
-					}}
+					onClick={() => signOut()}
+					disabled={isLoading}
 				>
 					Sign Out
 				</Button>
@@ -102,7 +72,7 @@ export function ProfileDetails() {
 								<Input
 									id="name"
 									{...form.register("name")}
-									disabled={loading}
+									disabled={isLoading}
 								/>
 								{form.formState.errors.name && (
 									<p className="text-destructive text-sm">
@@ -117,7 +87,7 @@ export function ProfileDetails() {
 									id="image"
 									type="url"
 									{...form.register("image")}
-									disabled={loading}
+									disabled={isLoading}
 									placeholder="https://example.com/image.jpg"
 								/>
 								{form.formState.errors.image && (
@@ -127,18 +97,15 @@ export function ProfileDetails() {
 								)}
 							</div>
 
-							<FormError message={error} />
-							<FormSuccess message={success} />
-
 							<div className="flex items-center gap-3">
-								<Button type="submit" disabled={loading}>
+								<Button type="submit" disabled={isLoading}>
 									Save Changes
 								</Button>
 								<Button
 									type="button"
 									variant="outline"
 									onClick={() => setIsEditing(false)}
-									disabled={loading}
+									disabled={isLoading}
 								>
 									Cancel
 								</Button>
@@ -180,7 +147,6 @@ export function ProfileDetails() {
 
 							<Button
 								onClick={() => {
-									resetState();
 									setIsEditing(true);
 								}}
 								variant="secondary"

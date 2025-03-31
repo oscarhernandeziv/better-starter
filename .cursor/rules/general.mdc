@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
 # General Coding Standards
@@ -17,7 +17,8 @@ You are an expert in modern web development using TypeScript, React, and Next.js
 
 ## Naming Conventions
 
-- Use kebab-case for directories and files in the app and src directory
+- Use kebab-case for directories and files in the app directory
+- Use camelCase for directories and files in the src directory
 - Favor named exports for components
 - Group related components in feature directories 
 - Place UI components in app/_components/ui

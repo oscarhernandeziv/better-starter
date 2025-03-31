@@ -2,9 +2,8 @@
 
 import { Button } from "@/app/_components/ui/button";
 import { cn } from "@/app/_components/utils";
-import type { SocialProvider } from "@/src/domain/schemas/auth";
-import { useAuthState } from "@/src/hooks/use-auth-state";
-import { signIn } from "@/src/lib/auth-client";
+import type { SocialProvider } from "@/src/entities/models/auth";
+import { useAuth } from "@/src/hooks/use-auth";
 
 interface SocialButtonProps {
 	provider: SocialProvider;
@@ -18,30 +17,25 @@ export const SocialButton = ({
 	provider,
 	icon,
 	label,
+	callbackURL,
 	className,
 }: SocialButtonProps) => {
-	const { setError, setSuccess, loading, setLoading, resetState } =
-		useAuthState();
+	const { signInWithSocial, isLoading } = useAuth();
 
 	const handleSignIn = async () => {
 		try {
-			await signIn.social(
-				{ provider },
-				{
-					onResponse: () => setLoading(false),
-					onRequest: () => {
-						resetState();
-						setLoading(true);
-					},
-					onSuccess: () => {
-						setSuccess("You are logged in successfully");
-					},
-					onError: (ctx) => setError(ctx.error.message),
-				},
-			);
+			// Use root path as callback URL if not provided
+			const generatedCallbackURL = callbackURL || "/";
+
+			// Call the signInWithSocial method with the provider and callback URL
+			const result = await signInWithSocial(provider, generatedCallbackURL);
+
+			// If we get a redirect URL in the result, redirect the browser
+			if (result && typeof result === "object" && "url" in result) {
+				window.location.href = result.url as string;
+			}
 		} catch (error: unknown) {
-			console.error(error);
-			setError("Something went wrong");
+			console.error("Error during social sign in:", error);
 		}
 	};
 
@@ -49,7 +43,7 @@ export const SocialButton = ({
 		<Button
 			variant="outline"
 			onClick={handleSignIn}
-			disabled={loading}
+			disabled={isLoading}
 			className={cn("flex w-full items-center justify-center", className)}
 		>
 			<span className="mr-2">{icon}</span>

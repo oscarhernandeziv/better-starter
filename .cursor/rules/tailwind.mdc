@@ -23,6 +23,8 @@ You are an expert in Tailwind CSS v4.0 and shadcn/ui component library.
 ## Shadcn UI Implementation
 
 - Use shadcn/ui components from app/_components/ui
+- Do not attempt to create new shadcn/ui components from scratch on your own
+- Only add new shadcn/ui components using the command `bunx --bun shadcn@latest add [component]`
 - Customize shadcn/ui components via the theming system in app/_components/theme
 - Use the proper component variant API
 - Implement dark mode toggle using next-themes

@@ -3,7 +3,7 @@
 import { Button } from "@/app/_components/ui/button";
 import { Checkbox } from "@/app/_components/ui/checkbox";
 import { cn } from "@/app/_components/utils";
-import type { Todo } from "@/src/db/repositories/todo-repository";
+import type { Todo } from "@/src/entities/models/todo";
 import { Trash } from "lucide-react";
 
 interface TodoItemProps {
