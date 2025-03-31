@@ -66,3 +66,9 @@ export class UsernameInUseError extends AppError {
 		super("Username is already in use", 400, "UsernameInUseError");
 	}
 }
+
+export class DatabaseError extends AppError {
+	constructor(message = "Database operation failed") {
+		super(message, 500, "DatabaseError");
+	}
+}
